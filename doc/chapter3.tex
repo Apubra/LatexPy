@@ -1,0 +1,1025 @@
+%%%% This template is customised for edited volumes published with Cambridge
+%%%% University Press. It should be used in conjunction with the other files
+%%%% included in cup_volumes.zip available from
+%%%% http://www.michaelcuffaro.com/latex.shtml
+%%%%
+%%%% Note: Lorem ipsum text generated via http://www.lipsum.com/
+%%%%
+%%%% It is freely available for you to use.
+%%%%
+%%%% Copyright 2017, Michael Cuffaro.
+
+
+%\renewcommand{\chapterauthor}{Nan Tucket}
+\renewcommand{\shortchaptertitle}{Reversible Multiplier Circuit}
+\chapter{Reversible Multiplier Circuit}
+\label{ch:chapter3}
+
+\settocdepth{section}
+\cftaddtitleline{toc}{section}{\emph{\chapterauthor}}{}
+\settocdepth{chapter}
+Multipliers work on signed and unsigned numbers. Signed numbers can be multiplied using the Baugh-Wooley multiplication algorithm. But radix--4 Booth's algorithm can substantially reduce the number of partial products in multiplier and incur less overhead for the summation network. Moreover, a reversible multiplier will avoid the heat loss completely in comparison with the irreversible one.
+
+\section{Multiplication Using Booth's Recoding}
+
+Multiplication circuits are usually composed of two parts. One is the Partial Product Generation (PPG) circuit and the other is the Multi-Operand Addition (MOA) circuit. In a PPG circuit, partial products are generated based on the status ofthe multiplier bits. For each multiplier bit and its status (0 or 1), it is decided whether to add the multiplier with the partial product or not. After the generation of all the partial products, summation circuit adds them and produces the result. So, for an {n $\times$ n} multiplier, \textit{n} partial products are generated.
+
+In this chapter, a suitable algorithm is described to optimize the complexities of {n $\times$ n} multipliers. Here, the Booth's algorithm is applied with radix-4. Booth's algorithm with other radix can also be applied to get {n $\times$ n} multiplier circuit. Higher radix representation of a number yield less number of bits. For example, a \textit{k}-bit binary number can be interpreted as a  $\left\lceil k/2\right\rceil $ digit radix-4 number, a $\left\lceil k/3\right\rceil $  digit radix-8 number and so on. As a result, if a multiplier has a high radix representation, the number of partial products is reduced. If a \textit{k}-bit number is represented using radix-4 representation then there will be $\left\lceil k/2\right\rceil $  partial products and less hardware will be needed to accumulate them. Booth's recoding of \textit{k}-bit binary number produces a radix-4 Booth's recoded number. Table 3.1 shows Booth's recoding and the example below shows how a \textit{2}'s complement binary number is recoded using Booth's recoding:
+
+( 1 0    0 1   0 1   1 0 {\textbar} 0 )${}_{2's\ complement}$ = (-2 1 2 -2)${}_{four}$
+
+The recoding of the above binary number shows that an extra {0} has been added at the end of the bit string to get three bits to be encoded. The result of a multiplication is formed by summation of the partial products. The number of partial products is the number of bits in the recoded multiplier. Booth's recoding represents multiplier with less number of bits and hence, the number of partial products is decreased.
+
+\begin{table}[!h]
+	\centering
+	\caption{Radix-4 Booth's Recoding}
+	\label{tab:p1_c3_tab1}
+	\begin{tabular}{p{0.6in}p{0.6in}p{0.5in}p{0.9in}} \hline  
+		\textbf{Bit  Position (i+1)} & \textbf{Bit Position (i)} & \textbf{Bit Position  (i-1)} & \textbf{Value to be added with   multiplicand (M)} \\ \hline 
+		0 & 0 & 0 & 0$\times $M \\ 
+		0 & 0 & 1 & 1$\times $M \\ 
+		0 & 1 & 0 & 1$\times $M \\  
+		0 & 1 & 1 & 2$\times $M \\  
+		1 & 0 & 0 & -2$\times $M \\ 
+		1 & 0 & 1 & -1$\times $M \\  
+		1 & 1 & 0 & -1$\times $M \\ 
+		1 & 1 & 1 & -0$\times $M \\ \hline 
+	\end{tabular}
+\end{table}
+
+In Booth's recoding, the multiplicand has to be multiplied by numbers in the range of [-2, 2]. This can be achieved in hardware by shifting and complementing logic. A {4}-bit multiplication has been shown in Figure~\ref{fig:p1_c3_fig1}. 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{chapters/part1/chapter3/fig1.eps}
+	\caption{Process of {4 $\times$ 4} Multiplications}
+	\label{fig:p1_c3_fig1}
+\end{figure}
+
+\section{Reversible Gates as Half Adders and Full Adders}
+Peres Gate (PG) can be used as a half adder if its third input is set to {0}. HNG gate can be used as a full adder. There are several other full adders also. But, HNG is the best in terms of quantum cost and hardware complexity. The quantum cost of HNG is six and its total logical calculation is as follows:
+\begin{center}
+	$T = 5\alpha + 2\beta$; and
+\end{center}
+
+\noindent The quantum cost of PG is four and its total logical calculation is as follows:
+
+\begin{center}
+	$W = 2\alpha +\beta$.
+\end{center}
+
+
+
+\noindent The input and output vectors of HNG as shown in Figure~\ref{fig:p1_c3_fig1_1} gate are given below:
+
+\begin{center}
+	{$I{}_{v} = (a, b, c, d)$}
+\end{center}
+\begin{center}
+	$O{}_{v} = (a, b, a \oplus b \oplus c , (a \oplus b) c \oplus ab \oplus d))$	
+\end{center}
+Figure~\ref{fig:p1_c3_fig1_2} presents the quantum presentation of HNG gate.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.6\textwidth]{chapters/part1/chapter3/fig1_1.eps}
+	\caption{Block Diagram of pa Reversible HNG Gate} 
+	\label{fig:p1_c3_fig1_1}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\textwidth]{chapters/part1/chapter3/fig1_2.eps}
+	\caption{The Quantum Representation of a Reversible HNG Gate} 
+	\label{fig:p1_c3_fig1_2}
+\end{figure}
+
+By setting the third input as \textit{C${}_{in}$} (carry in) and fourth input as {0}, HNG can work as a full adder. The third output is the sum of the addition of \textit{a, b} and \textit{C${}_{in}$}, while the fourth output is the carry generated by the addition. 
+
+\section{Some Signed Reversible Multipliers}
+
+Fast and efficient reversible multiplier circuit designing is a very interesting area of research and different types of designs have been done by researchers. But very few designs consider multiplying signed numbers and numbers involving large number of bits like {16} bits, {32} bits, {64} bits etc. The comparisons made by them are usually done on the basis of small multiplication circuits like {4 $\times$ 4} or {5 $\times$ 5} etc. When generalizing and designing large multipliers, these designs come up with heavy number of quantum gates, garbage outputs, constant inputs and hardware complexity. The reason behind it lies in the number of partial products. If the number of partial products is not reduced, a huge summation network is required for designing large scale multipliers.
+
+\section{Design of Reversible Multiplier Circuit}
+
+The design of reversible multiplier is composed of three components: Recoding Cell (R Cell), Partial Product Generator Circuit (PPG) and Multi-Operand Addition Circuit (MOA).  %In Subsection 3.4.1, some quantum gates are described. Subsection 3.4.2 describes the working principle of R cell. The PPG circuit is described in Subsection 3.4.3 and MOA circuit is shown in Subsection 3.4.4, respectively. The area and power calculation of the \textit{n $\times$ n} multiplier circuit is described in Subsection 3.4.5.
+\subsection{Some Quantum Gates}
+In this subsection, two quantum gates, namely Controlled-T and Controlled-T+ gate, are introduced. By using these gates and tensor product, any other related gates can be constructed. By cascading a CNOT gate and a Controlled-V gate, a quantum gate is shown, namely Controlled-T gate. Controlled-T+ gate is also described by cascading a CNOT gate and a Controlled-V+ gate.
+
+The Matrix of a quantum circuit is derived from its quantum gate Matrices using matrix multiplication. The Matrix for CNOT gate (M${}_{CNOT}$), Matrix for Controlled-V gate (M${}_{Controlled-V}$) and Matrix for Controlled-V${}^{+}$ gate (M${}_{controlled-V+}$) is described which are given below:
+
+
+
+\begin{center}
+	M${}_{CNOT}$=$\left( \begin{array}{cccc}
+	1 & 0 & 0 & 0 \\ 
+	0 & 1 & 0 & 0 \\ 
+	0 & 0 & 0 & 1 \\ 
+	0 & 0 & 1 & 0 \end{array}
+	\right)$M${}_{Controlled-V}$ =  $\left( \begin{array}{cccc}
+	1 & 0 & 0 & 0 \\ 
+	0 & 1 & 0 & 0 \\ 
+	0 & 0 & \frac{i+1}{2} & \frac{1-i}{2} \\ 
+	0 & 0 & \frac{i-1}{2} & \frac{i+1}{2} \end{array}
+	\right)$
+	
+	M${}_{Controlled-V+}$ =   $\left( \begin{array}{cccc}
+	1 & 0 & 0 & 0 \\ 
+	0 & 1 & 0 & 0 \\ 
+	0 & 0 & \frac{1-i}{2} & \frac{1+i}{2} \\ 
+	0 & 0 & \frac{1+i}{2} & \frac{1-i}{2} \end{array}
+	\right)$
+\end{center}
+
+In the following Matrix for Controlled-T (M${}_{Controlled-T}$) and Controlled-T${}^{+}$ (M${}_{Controlled-T+}$) are shown. Figure shows the block diagram of the gates.
+
+\begin{center}\label{p1_c3_matrix_1}
+	M${}_{\ Controlled-T}$ = M${}_{CNOT}\times$M${}_{Controlled-V}$ =   $\left( \begin{array}{cccc}
+	1 & 0 & 0 & 0 \\ 
+	0 & 1 & 0 & 0 \\ 
+	0 & 0 & \frac{i-1}{2} & \frac{1+i}{2} \\ 
+	0 & 0 & \frac{1+i}{2} & \frac{1-i}{2} \end{array}
+	\right)$
+	
+	\noindent M${}_{\ Controlled-T+}$ = M${}_{CNOT}\times$M${}_{Controlled-V+}$ =  $\left( \begin{array}{cccc}
+	1 & 0 & 0 & 0 \\ 
+	0 & 1 & 0 & 0 \\ 
+	0 & 0 & \frac{i+1}{2} & \frac{1-i}{2} \\ 
+	0 & 0 & \frac{1-i}{2} & \frac{1+i}{2} \end{array}
+	\right)$
+\end{center}
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[b]{0.30\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/part1/chapter3/fig2_a.eps}
+		\caption{Symbols of the Controlled-T Gate}
+		\label{fig:p1_c3_fig2_a}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.30\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/part1/chapter3/fig2_b.eps}
+		\caption{Symbols of the Controlled-T${}^{+}$ Gate}
+		\label{fig:p2_c3_fig2_b}
+	\end{subfigure}
+	\
+	\caption{Symbols of the Controlled-T and Controlled-T${}^{+}$ Gate}
+	\label{fig:p1_c3_fig2}
+\end{figure}
+\subsection{Recoding Cell}
+
+The recoding cell takes three bits of the multiplier and produces three recoded bits, which are the Shift Enable $(SE)$ bit, Operation bit $(H)$ and the Sign bit $(D)$. If $SE = 1$, then it can be concluded that the either $+2M$ or $-2M$ is to be added to the partial product, where $M$ is the multiplicand. If $H = 1$, then it can be concluded that the combination of multiplier bits is not $0$. If $D = 1$, it can be concluded that, it is needed to form $2's$ complement and hence toggle the bits of the multiplicand. The recoded bits corresponding to the input bits are given in Table~\ref{tab:p1_c3_tab2}. The logical operations to generate the recoded bits are given below:   
+
+$D=X_{i+1} $(Value at bit position \textit{i}+1)
+\[H=A+B\] 
+\[SE=A\oplus H\] 
+Here, $A=X_{i} \oplus X_{i-1} $ and $B=X_{i} \oplus X_{i+1} $
+\[O=\overline{SE\oplus D}\] 
+
+The last output \textit{O} is needed when \textit{2}'s complement generation and shifting is done. In order to develop the \textit{R} cell (Recoding cell), a \textit{5$\times $5} gate (BSJ Gate) has been introduced. The input vector, \textit{I${}_{v}$} and Output vector, \textit{O${}_{v}$} of the BSJ gate are as follows:
+\begin{center}
+\textit{ I${}_{v}$}= $\mathrm{\{}$\textit{A}, \textit{B}, \textit{C}, \textit{D}, \textit{E}$\mathrm{\}}$ and 
+
+\textit{O${}_{v}$}= $\mathrm{\{}$\textit{P=A, Q=A$\oplus$B, R=A$\oplus$B$\oplus$C$\oplus$E, S=C$\oplus$D, T=E}$\mathrm{\}}$
+\end{center}
+
+\begin{table}[!h]
+	\centering
+	\caption{Truth Table for Recoding Cell}
+	\label{tab:p1_c3_tab2}
+	\begin{tabular}{p{0.4in}p{0.4in}p{0.4in}p{0.4in}p{0.5in}p{0.4in}} \hline 
+		Bit  Position $(i+1)$ & Bit Position $(i)$ & Bit Position  $(i-1)$ & Shift Enable $(SE)$ & Operation Bit $(H)$ & Sign Bit $(D)$ \\ \hline 
+		0 & 0 & 0 & 0 & 0 & 0 \\ 
+		0 & 0 & 1 & 0 & 1 & 0 \\ 
+		0 & 1 & 0 & 0 & 1 & 0 \\ 
+		0 & 1 & 1 & 1 & 1 & 0 \\ 
+		1 & 0 & 0 & 1 & 1 & 1 \\ 
+		1 & 0 & 1 & 0 & 1 & 1 \\ 
+		1 & 1 & 0 & 0 & 1 & 1 \\ 
+		1 & 1 & 1 & 0 & 0 & 1 \\ \hline 
+	\end{tabular}
+\end{table}
+
+Figure~\ref{fig:p1_c3_fig3} shows the diagram of {5$\times $5} BSJGate and Figure~\ref{fig:p1_c3_fig4} shows its equivalent quantum representation. If the truth table of the corresponding input and output of BSJ gate is generated, it will verify the unique input-output mapping between them. Figure~\ref{fig:p1_c3_fig4} shows that, the quantum cost of BSJ gate is {4}. The gate requires five Ex-OR operations. So, the hardware complexity of the BSJ Gate is {5$\alpha$.} The Peres Gate has been modified to construct the \textit{R} cell. Figure~\ref{fig:p1_c3_fig5} shows the diagram of the {3$\times $3} Modified Peres Gate (MPG) and Figure~\ref{fig:p1_c3_fig6} shows the quantum representation of the gate. The minimization of quantum gates of MPG is shown in Figure~\ref{fig:p1_c3_fig7} and Figure~\ref{fig:p1_c3_fig8}. The number of quantum gates and hardware complexity of Modified Peres Gate are {4} and $2\alpha+\beta +3d,$ respectively. The input-output mapping and reversibility of MPG can be easily verified by generating all possible inputs and obtaining the corresponding outputs.
+
+\begin{figure}[!tbh]
+	\centering
+	\includegraphics[width=0.6\textwidth]{chapters/part1/chapter3/fig3.eps}
+	\caption{{5$\times $5} BSJ Gate and its Corresponding Input Output Mapping}
+	\label{fig:p1_c3_fig3}
+\end{figure}
+
+
+\begin{figure}[!tbh]
+	\centering
+	\includegraphics[width=0.8\textwidth]{chapters/part1/chapter3/fig4.eps}
+	\caption{Quantum Realization of {5$\times $5} BSJ Gate}
+	\label{fig:p1_c3_fig4}
+\end{figure}
+
+\begin{figure}[!tbh]
+	\centering
+	\includegraphics[width=0.6\textwidth]{chapters/part1/chapter3/fig5.eps}
+	\caption{{3$\times $3} MPG and Its Corresponding Input Output Mapping}
+	\label{fig:p1_c3_fig5}
+\end{figure}
+
+
+\begin{figure}[!tbh]
+	\centering
+	\includegraphics[width=0.8\textwidth]{chapters/part1/chapter3/fig6.eps}
+	\caption{Quantum Realization of {3$\times $3} MPG}
+	\label{fig:p1_c3_fig6}
+\end{figure}
+
+\begin{figure}[!tbh]
+	\centering
+	\includegraphics[width=0.8\textwidth]{chapters/part1/chapter3/fig7.eps}
+	\caption{Quantum Analysis of {3$\times $3 }MPG}
+	\label{fig:p1_c3_fig7}
+\end{figure}
+
+\begin{figure}[!tbh]
+	\centering
+	\includegraphics[width=0.8\textwidth]{chapters/part1/chapter3/fig8.eps}
+	\caption{A Compact Quantum Realization of 3$\times $3 MPG}
+	\label{fig:p1_c3_fig8}
+\end{figure}
+
+Figure~\ref{fig:p1_c3_fig9} shows the block diagram of the \textit{R} cell. Among the reversible gates, Feynman Gate and F2G Gate have been used in \textit{R} cell. Two garbage outputs (denoted by \textit{G}) are generated by \textit{R} cell. The third and fourth outputs (denoted by \textit{D}) of the \textit{R} cell are same. Both of these outputs are used in the partial product generating circuit (Figure~\ref{fig:p1_c3_fig17}). For this reason, the duplicate output is not considered as garbage output. The total quantum cost to realize \textit{R} cell is:
+\begin{figure}[!tbh]
+	\centering
+	\includegraphics[width=0.5\textwidth]{chapters/part1/chapter3/fig9.eps}
+	\caption{Block Diagram of \textit{R} Cell}
+	\label{fig:p1_c3_fig9}
+\end{figure}
+
+\begin{align*}
+Q_R &= Q_{FG} + Q_{F2G} + Q_{MPG} + Q_{BSJ}\\
+&= 1 + 2 + 4 + 4\\
+&= 11
+\end{align*}
+
+
+The total hardware complexity of \textit{R} cell is:
+
+\begin{align*}
+H_{R} &= H_{FG} + H_{F2G} + H_{BSJ} + H_{MPG}\\
+&= \alpha + 2 \alpha + 5\alpha + (2\alpha + \beta+3d) \\
+&= 10\alpha + \beta + 3d
+\end{align*}
+
+
+
+
+The delay of \textit{R} cell can be modeled as below:
+
+\begin{align*}
+D_{R}&=D_{FG} + D_{F2G} + D_{MPG} + D_{BSJ}\\
+&= (0.1 + 0.12 + 0.15 + 0.12) ns\\
+&= 0.49 ns
+\end{align*}
+The detailed diagram of \textit{R} cell has been shown in Figure~\ref{fig:p1_c3_fig10}. \textit{R} cell is used as a part of the Partial Product Generation Circuit to ensure the proper recoding of the multiplier bits. Among four constant inputs that are required for the operation of \textit{R} cell, three are set to zero, while the remaining is set to one. 
+
+
+
+\begin{figure}[!tbh]
+	\centering
+	\includegraphics[width=\textwidth]{chapters/part1/chapter3/fig10.eps}
+	\caption{Construction of \textit{R} Cell.}
+	\label{fig:p1_c3_fig10}
+\end{figure}
+
+\subsection{Partial Product Generation (PPG) Circuit}
+
+The PPG circuit takes the multiplicand and multiplier as input and produces the partial products as output. The whole process can be divided into three steps. At first, the multiplicand bits have been taken as input and converted to recoded bits. A Feynman gate and two \textit{R} cells have been used for this purpose. Secondly, the multiplier bits and the recoded bits are fed to a component which produces some partial products. Modified Toffoli gates, Fredkin gates and Modified Fredkin gates have been used to construct this part. Finally, the sign extensions of partial products are generated. TS-3 gates have been used for this purpose.
+
+
+The design of PPG circuit requires two types of gates: Modified Toffoli Gate (MTG) and Modified Fredkin Gate (MFRG). The block diagrams of MTG and MFRG have been shown in Figure~\ref{fig:p1_c3_fig12} and Figure~\ref{fig:p1_c3_fig13}, respectively. Quantum realizations of MTG and MFRG have been shown in Figure~\ref{fig:p1_c3_fig12} and Figure~\ref{fig:p1_c3_fig14}, respectively. The minimization of quantum gates of MFRG is shown in Figure~\ref{fig:p1_c3_fig15}. The reversibility and unique input-output mapping of MTG and MFRG can be easily proved by generating all possible inputs and obtaining the corresponding outputs.
+
+\begin{figure}[!tbh]
+	\centering
+	\includegraphics[width=0.6\textwidth]{chapters/part1/chapter3/fig11.eps}
+	\caption{{3$\times $3} MTG and Its Corresponding Input Output Mapping}
+	\label{fig:p1_c3_fig11}
+\end{figure}
+
+\begin{figure}[!tbh]
+	\centering
+	\includegraphics[width=0.8\textwidth]{chapters/part1/chapter3/fig12.eps}
+	\caption{Quantum Realization of {4$\times $4} MTG}
+	\label{fig:p1_c3_fig12}
+\end{figure}
+
+\begin{figure}[!tbh]
+	\centering
+	\includegraphics[width=0.6\textwidth]{chapters/part1/chapter3/fig13.eps}
+	\caption{{3$\times $3} MFRG and its Corresponding Input Output Mapping}
+	\label{fig:p1_c3_fig13}
+\end{figure}
+
+\begin{figure}[!tbh]
+	\centering
+	\includegraphics[width=0.8\textwidth]{chapters/part1/chapter3/fig14.eps}
+	\caption{Quantum Realization of {4$\times $4} MFRG}
+	\label{fig:p1_c3_fig14}
+\end{figure}
+
+\begin{figure}[!tbh]
+	\centering
+	\includegraphics[width=0.8\textwidth]{chapters/part1/chapter3/fig15.eps}
+	\caption{A Compact Quantum Realization of {4$\times $4} MFRG}
+	\label{fig:p1_c3_fig15}
+\end{figure}
+The \textit{R} cell is integrated with the PPG circuit to recode the multiplier bits as shown in Figure~\ref{fig:p1_c3_fig17}. TS-3 gates work as the sign extension units. The partial product array for a {16$\times $16} multiplier has been shown in Figure~\ref{fig:p1_c3_fig16}. The sign extension bits are denoted by the letter \textit{`E'}, whereas the sign bits are denoted by \textit{`S'}. The sign bit is the \textit{`D'} output generated from the \textit{R} cell. For each partial product, one \textit{R }cell is needed which recodes three bits. Algorithm~\ref{alg:part1_c3_alg1} shows the partial product generation process. In Figure~\ref{fig:p1_c3_fig17}, the detailed partial product array for a {4 $\times$ 4} multiplier has been shown. The generalized diagram for {n $\times$ n} PPG has been shown in Figure~\ref{fig:p1_c3_fig18}.
+
+\begin{figure}[!tbh]
+	\centering
+	\includegraphics[width=0.8\textwidth]{chapters/part1/chapter3/fig16.eps}
+	\caption{{16$\times $16} PPG Array}
+	\label{fig:p1_c3_fig16}
+\end{figure}
+
+\begin{figure}[!tbh]
+	\centering
+	\includegraphics[width=\textwidth]{chapters/part1/chapter3/fig17.eps}
+	\caption{Gate Level Diagram of a {4 $\times$ 4} PPG for Reversible Booth's Multiplier}
+	\label{fig:p1_c3_fig17}
+\end{figure}
+
+\begin{figure}[!tbh]
+	\centering
+	\includegraphics[width=\textwidth]{chapters/part1/chapter3/fig18.eps}
+	\caption{Block Diagram of an \textit{n$\times $n} PPG for Reversible Booth's Multiplier}
+	\label{fig:p1_c3_fig18}
+\end{figure}
+\counterwithin{algorithm}{subsection}
+\begin{algorithm}[!h]
+	\caption{Partial Product Generation}
+	\label{alg:part1_c3_alg1}
+	Input: { {\it A, B}; (both are {\it m}-bit binary number), C${}_{out}$(\{\it1}-bit)\\
+	Output: { { Sum({\it m}-bit), Carry({\it 1}-bit)}}
+	\begin{algorithmic}[1]
+		
+		\STATE Begin
+\FOR{ \textit{i}=0 \TO \textit{n}-1 }
+		\IF{\textit{i}=0}
+		\STATE Apply R cell with
+		\STATE Input := $\mathrm{\{}$0, x${}_{0}$, x${}_{1}$, 0, 0, 0, 1$\mathrm{\}}$
+		\ELSE 
+		\STATE Input := $\mathrm{\{}$x${}_{2i-1}$, x${}_{2i}$, x${}_{2i+1}$, 0, 0, 0, 1$\mathrm{\}}$
+		\ENDIF
+		\STATE Output :=$\mathrm{\{}$\textit{H, SE, D, D, O, G, G}$\mathrm{\}}$
+\IF{\textit{H}=0}
+ \FOR{\textit{j}-0 \TO \textit{n}-1}
+		\STATE PPG\_ array[j] = 0
+  \ENDFOR
+\ELSE
+\IF{\textit{SE}=0}
+\IF {\textit{D}=0}
+\FOR{\textit{j}-0 \TO \textit{n}-1} 
+\STATE PPG\_ array[j] = multiplicand[j]
+\ENDFOR
+\ELSE
+\FOR{\textit{j}-0 \TO \textit{n}-1} 
+\STATE PPG\_array[j] = $\overline{multiplicand[j]}$
+\ENDFOR
+\ENDIF
+\ELSE 
+\STATE PPG\_array[0] =$\overline{multiplicand[j]}$ . D $\oplus $multiplicand[j] . $\overline{(SE\oplus D)}$
+\IF{\textit{D}=0}
+\FOR{\textit{j}-0 \TO \textit{n}} 
+\STATE PPG\_array[j] = PPG\_ array[j] = multiplicand[j-1]
+\ENDFOR
+\ELSE 
+\FOR{\textit{j}-0 \TO \textit{n}} 
+\STATE PPG\_array[j] = $\overline{multiplicand[j-1]}$
+\ENDFOR
+\ENDIF
+ \ENDIF  
+\ENDIF
+ \STATE Generate the sign extension bits E\textit{ =}$\overline{YH\oplus D}$
+		
+\ENDFOR
+	
+		\STATE End
+	\end{algorithmic}
+\end{algorithm}
+
+\subsection{Multi-Operand Addition (MOA) Circuit}
+
+The multi-operand addition (MOA) circuit adds the partial products column-wise that have been generated by the PPG circuit. To add the partial products, some full adders and half adders are required. HNG gate can be used as full adder and PG gate can be used as half adder. The summation of bits are propagated downwards in a column, while the carry bits are propagated from right to left most column. The construction of {4$\times $4} MOA has been shown in Figure~\ref{fig:p1_c3_fig19}. Algorithm~\ref{alg:part1_c3_alg2} describes the process of Multi-Operand Addition. 
+
+Figure~\ref{fig:p1_c3_fig20} shows the generalized representation of the MOA based on HNG and PG gates. It can be easily observed that for multiplying two \textit{n-}bit numbers, where \textit{n = 2m}, only the last row requires some PGs. There are six columns in the MOA gate which have the depth of \textit{k}, where \textit{k} = $\left\lceil n/2\right\rceil $.
+
+\begin{algorithm}[!h]
+	\caption{Multi-Operand Addition}
+	\label{alg:part1_c3_alg2}
+	Input:  {\it A, B}; (both are {\it m}-bit binary number), C${}_{out}$ ({1}-bit)\\
+	Output: { { Sum ({\it m}-bit), Carry ({1}-bit)}}
+	\begin{algorithmic}[1]
+		
+		\STATE Begin
+		\FOR{ each column \textit{i} =0 \TO i =2\textit{n} in PPG Array }
+		\IF {Number\_of\_bits to add in each column is even}
+		\STATE Apply {(Number\_of\_bits/2)}-{1} HNG
+		\STATE Apply 1 PG 
+		\ELSE 
+		\STATE Apply  $\left\lfloor \textnormal{Number\_ of\_ bits/2}\right\rfloor $ HNG
+		\ENDIF
+		\ENDFOR
+		
+		\STATE End
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{figure}[!tbh]
+	\centering
+	\includegraphics[width=18cm,height=8cm]{chapters/part1/chapter3/fig19.eps}
+	\caption{Gate Level Diagram of a {4$\times $4} MOA for Reversible Booth's Multiplier}
+	\label{fig:p1_c3_fig19}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=18cm,height=6cm]{chapters/part1/chapter3/fig20.eps}
+	\caption{Diagram of an \textit{n$\times $n} MOA for Reversible Booth's Multiplier.}
+	\label{fig:p1_c3_fig20}
+\end{figure}
+
+\subsection{Calculation of Area and Power of {n ${\times}$ n} Multiplier Circuit}
+
+Area is an important issue to design a circuit. If the area of a circuit is very large then the cost of that circuit will increase. Therefore, area is an important considerable matter. Algorithm~\ref{alg:part1_c3_alg3} describes the area calculation of the {n $\times$ n} multiplier circuit.
+
+\begin{algorithm}[!h]
+	\caption{Calculation of Area for a Quantum {n}$\times ${n} Multiplier circuit}
+	\label{alg:part1_c3_alg3}
+	Input: {\it A, B}; (both are {\it m}-bit binary number), C${}_{out}$(1-bit)\\
+	Output: {{Sum({\it m}-bit), Carry({1}-bit)}}
+	\begin{algorithmic}[1]
+		
+		\STATE Begin
+		\STATE \textit{Power} = 0, $Q_{PPG\ }= 0, Q_{MOA\ }= 0$
+		\FOR{\textit{i} =1 \TO \textit{n}}
+		\STATE  Get the Number of Quantum Gates of   PPG (Partial Product Generation) Circuit,  PPG
+		\STATE $Q{}_{PPG} = Q{}_{PPG} + Q.PPG$
+		\ENDFOR
+		\FOR{\textit{i} =1 \TO \textit{n}}
+		\STATE Get the Number of Quantum Gates of a MOA (Multi-Operand Addition) circuit, MOA
+		\STATE $Q{}_{MOA} = Q{}_{MOA} + Q.MOA$
+		\ENDFOR
+		\STATE \textit{Power} = 142.3\textit{$\times $} ($Q{}_{PPG\ }+Q{}_{MOA}$)
+		\RETURN \textit{Power}
+		\STATE End
+	\end{algorithmic}
+\end{algorithm}
+
+Power is also an important issue to design a circuit. It is needed to design such a circuit which needs less power as the world is facing the lack of power. Therefore, power is also an important considerable matter. Algorithm~\ref{alg:part1_c3_alg4} describes the power calculation of the {n}$\times $\textit{n} multiplier circuit.
+
+\begin{algorithm}[!h]
+	\caption{Calculation of Power for a Quantum {n}$\times ${n} Multiplier circuit}
+	\label{alg:part1_c3_alg4}
+	Input: { {\it A, B}; (both are {\it m}-bit binary number), C${}_{out}$(\{\it1}-bit)\\
+	Output: { { Sum({\it m}-bit), Carry({\it 1}-bit)}}
+	\begin{algorithmic}[1]
+		
+		\STATE Begin
+		\STATE \textit{Area} = 0, $Q{}_{PPG\ }= 0, Q{}_{MOA\ }= 0$
+		\FOR{\textit{i} =1 \TO \textit{}n}
+		\STATE  Get the Number of Quantum Gates of   PPG (Partial Product generation) Circuit,  PPG
+		\STATE Q${}_{PPG}$ = Q${}_{PPG}$ + Q.PPG
+		\ENDFOR
+		\FOR{\textit{i} =1 \TO \textit{n}}
+		\STATE Get the Number of Quantum Gates of a MOA (Multi-Operand Addition) circuit, MOA
+		\STATE $Q{}_{MOA} = Q{}_{MOA} + Q.MOA$
+		\ENDFOR
+		\STATE \textit{Area} = 50\textit{$\times $} ($Q{}_{PPG\ }+Q{}_{MOA}$)
+		\RETURN \textit{Area}
+		\STATE End
+	\end{algorithmic}
+\end{algorithm}
+
+Complexity of a circuit is very important to analyze the cost of the circuit in terms of numbers of gates, garbage outputs, quantum costs, constant inputs, hardware complexity, quantum gates calculation complexity, delay of the reversible multiplier, delay of the quantum multiplier, area of the quantum multiplier and power of the quantum multiplier. In this section, different complexities of the reversible {n $\times$ n} multiplier are represented.
+\counterwithin{property}{subsection}
+\begin{property}\label{p1_c3_p1}\textnormal{
+	At least $(n-1)/2$ full adders are needed to add \textit{n} bits if $n=2m+1$. For \textit{n = 3}, at least ($n/2$)-1 full adders and one half adder are needed to compute the summation. Thus, the number of gates required to add \textit{n }bits is \textit{m =$\left\lfloor n/2\right\rfloor $.}}
+\end{property}
+\noindent\textbf{Proof}
+	For \textit{n} = 2, at least one PG, which works as a half adder, is needed to compute the sum. For \textit{n = 3}, at least one HNG, which works as a full adder is needed for adding them. Now, if  \textit{n $>$ 3} and \textit{n = 2m}, then after the addition of first three bits with HNG, one sum bit will be generated and it will be subsequently passed to the next level leaving  bits to be added. Before the last level two bits are added along with the sum bit from the previous level. The sequence of bit addition in each level is given below:
+
+
+\begin{align*}
+N_{B} &= 3+2+2+{\dots}+2m-1+1\\
+&= 3+2m-4+1\\ 
+N_{G} &= 1+(2m-4)\div 2+1\\ 
+&= 1 {HNG }+ {(}m-2{) HNG }+ 1{ PG}
+\end{align*}
+
+
+	
+\noindent Here, $N_{B} $= Total number of bits added
+	
+\noindent $N_{G} $= Number of gates needed
+	
+\noindent So, if \textit{n = 2m}, \textit{(n/2) - 1} HNG gates and one PG are needed to sum \textit{n} bits. Considering when \textit{n = 2m + 1}, the sequence of bit addition in each level is given below:
+
+\begin{align*}
+N_{B} &= 3+2+2+{\dots}+2m-2+2\\
+&= 3+2m-4+2\\
+N_{G} &= 1+(2m-4)\div 2+ 2\\ 
+&= 1 {HNG} + {(}m-2\textit{)HNG }+ 1{ HNG}\\
+&= m
+\end{align*}
+
+
+So, if \textit{n = 2m}, \textit{(n/2) - 1} HNG gates are needed to compute the sum. It can be also verified from above that the number of gates to add \textit{n} bits is \textit{m =$\left\lfloor n/2\right\rfloor $.}It is mentioned that, Property~\ref{p1_c3_p1} represents the property of addition of \textit{n} bits.
+
+\counterwithin{example}{subsection}
+\begin{example}\textnormal{
+	 In order to add {8} bits, it is needed {(8/2)-1 = 3} full adders and {1} half adder, but it is needed {(9-1)/2 = 4} full adders to add {9} bits.}
+\end{example}
+
+\begin{property}\label{p1_c3_p2}\textnormal{
+	An MOA (Multi-Operand Addition) circuit requires \textit{n} gates to accumulate the partial products generated by PPG (Partial Product Generation) circuit, where \textit{n} is the number of bits in the partial products except the sign bits.}
+\end{property}
+
+\noindent\textbf{Proof}
+	The PPG generates partial products from multiplicand and recoded multiplier which is shown in Figure~\ref{fig:p1_c3_fig16}. The \textit{S} bits are the sign bits, while the \textit{E} bits are sign extension bits. Let, \textit{B${}_{N}$} be the number of bits in column \textit{N} in the partial product array (without considering the sign bit \textit{S}) and \textit{G${}_{N}$} be the number of gates required to sum the bits in column \textit{N}. As the number of bits to be added in column \textit{N} is \textit{B${}_{N}$} and the number of carry bits generated by the gates in column \textit{N}-1 is $G_{N-1}$, the following equation can be written using Property~\ref{p1_c3_p2} for columns not containing the sign bit:
+
+\noindent \begin{center}
+	\textit{G${}_{N\ }$=}$\left\lfloor (B_{N} +G_{N-1} )/2\right\rfloor $
+\end{center}
+
+\noindent \begin{flushleft}
+	
+\end{flushleft}
+
+\noindent Here, \textit{G${}_{N-1}$} is the number of gates in column \textit{N-1}. So, the number of carry bits generated from column \textit{N-1} is \textit{G${}_{N-1}$}. Now, if \textit{G${}_{N-1}$ = B${}_{N-1}$}is considered and it is shown that \textit{G${}_{N}$ = B${}_{N}$}, then \textit{G${}_{N}$ = B${}_{N}$}is proved by induction. Now the above equality can be written as below:
+
+\noindent \begin{center}
+	\textit{G${}_{N\ }$=}$\left\lfloor (B_{N} +B_{N-1} )/2\right\rfloor $
+\end{center}
+
+\noindent \begin{flushleft}
+	
+\end{flushleft}
+
+\noindent Now, it can be easily verified from Figure 3.17 that the immediate previous right columns of the columns not containing the sign bit must have the same number of bits or one more bit. From this observation, the following equation can be obtained:  
+
+\noindent \begin{center}
+	\textit{G${}_{N\ }$= }$\left\lfloor (B_{N} +B_{N-1} )/2\right\rfloor $\textit{= B${}_{N}$}
+\end{center}
+
+\noindent \begin{flushleft}
+	
+\end{flushleft}
+
+\noindent Hence, for columns not containing the sign bit, it has been proved that \textit{G${}_{N}$ = B${}_{N}$}. For columns containing the sign bit, the following equation can be written using Property~\ref{p1_c3_p1} :
+
+\noindent \begin{center}
+	\textit{G${}_{N}$ = }$\left\lfloor (B_{N} +G_{N-1} +1)/2\right\rfloor $
+\end{center}
+
+\noindent \begin{flushleft}
+	
+\end{flushleft}
+
+\noindent Again by considering, \textit{G${}_{N}$ = B${}_{N-1}$}, the equation above can be written as below:
+
+\noindent \begin{center}
+	\textit{G${}_{N\ }$=}$\left\lfloor (B_{N} +B_{N-1} +1)/2\right\rfloor $
+\end{center}
+
+\noindent \begin{flushleft}
+	
+\end{flushleft}
+
+\noindent If a column containing sign bit and its number of bits is \textit{q}, then the immediate previous column contains \textit{q-1 }bits. Now, \textit{B${}_{N-1}$ = B${}_{N\ }$- 1}. So, the following equation can be derived:
+
+\noindent \begin{center}
+	\textit{G${}_{N}$} =$\left\lfloor (B_{N} +B_{N-1} +1)/2\right\rfloor $ = \textit{B${}_{N}$}
+\end{center}
+
+\noindent \begin{flushleft}
+	
+\end{flushleft}
+
+\noindent Therefore, the total number of gates needed to realize the MOA is the total number of bits in the partial product except the sign bits.
+
+\begin{example}\textnormal{
+	To realize a {4$\times $4} multiplier it is needed $k=4/2=2$ partial products. The first partial product contains {4$\times $2 = 8} bits. The second partial product contains {2} bits less than the first partial product according to the rule of radix-4 Booth's multiplication. So, the second partial product has \textit{6} bits. The total number of bits in these two partial products except the sign bits is {14}. It can be easily verified from design of the MOA of the {4$\times $4} reversible multiplier in Figure~\ref{fig:p1_c3_fig14} that it has {14} gates.}
+\end{example}
+
+\begin{property}\label{p1_c3_p3}\textnormal{
+	A Booth's recoded reversible \textit{n$\times $n }multiplier requires \textit{(3nk+9k) }gates, where \textit{n} is the number of bits of multiplicand and multiplier and \textit{k} = $\left\lceil n/2\right\rceil $.}
+\end{property}
+
+\noindent\textbf{Proof}
+	In radix-4 Booth's recoding, \textit{k} partial products are generated by a multiplier where \textit{k} =$\left\lceil n/2\right\rceil $. For each partial product one \textit{R} cell, one Fredkin Gate, $n-1$ Modified Fredkin Gates, one TS-3 Gate, $n$ Modified Toffoli Gates are needed. Also, one TS-3 gate and \textit{k-1 }FG gates are required for the complete multiplier circuit. Therefore, the total number of gates required for PPG is modeled as below:
+
+\counterwithin{equation}{subsection}
+\begin{equation}\label{p1_c3_eqn1}
+T{}_{ppg} = k R cell + (n-1)\times  k MFRG + k FRG + n\times k MTG + k TS-3 + 1 TS-3 + (k-1) FG
+\end{equation}
+
+
+
+\noindent As the \textit{R} cell contains {4} gates the number of gates can be written as below:
+
+ \begin{align*}
+ T_{ppg} &= k\times 4 + (n-1)\times  k + k + n\times k + k + 1 + (k-1)\\	
+ &= 2nk + 6k
+ \end{align*}
+
+With the help of Property~\ref{p1_c3_p2}, it can be shown that the summation circuit will contain \textit{nk+3k} gates, as there are \textit{n} bits in each row of partial products. Extra three bits are generated for sign extension in each row except the first and last rows. The first row contains four bits and the last row contains two bits for sign extension as shown in Figure~\ref{fig:p1_c3_fig16}. This makes three extra bits per partial product on an average. Therefore, the total number of gates is:
+
+\begin{align}\label{p1_c3_eqn2}
+{T{}_{G\ }= T{}_{PPG} + T{}_{MOA\ }= 2nk + 6k + nk + 3k = 3nk + 9k}
+\end{align}
+
+\begin{example}\textnormal{
+	It can be seen from the {4$\times $4} PPG in Figure~\ref{fig:p1_c3_fig15} that it contains 2\textit{nk }+ 6\textit{k} = 2 {$\times $}4 {$\times $}2 + 6 {$\times $}2 = 28 gates (Each \textit{R} cell contains {4 }gates inside). Here, \textit{n} = 4 and \textit{k} =$\left\lceil n/2\right\rceil $= 2.}
+\end{example}
+
+\begin{property}\label{p1_c3_p_4}\textnormal{
+	The MOA of Booth's recoded reversible \textit{n$\times $n } multiplier requires (\textit{nk + 4k -2n -- 1)} full adders and (\textit{2n -- k + 1)} half adders, where \textit{n} is the number of bits of multiplicand and multiplier, \textit{n=2m, k} = $\left\lceil n/2\right\rceil $ and \textit{n}$\mathrm{>}$4. The MOA of Booth's recoded reversible \textit{n$\times $n }multiplier requires ({$nk + 4k-2n-1$)} full adders and ({$2n - k + 1$)} half adders, where \textit{n} is the number of bits of multiplicand and multiplier, \textit{n=2m,k} = $\left\lceil n/2\right\rceil $ and \textit{n}$\mathrm{>}$4.}
+\end{property}
+
+
+\noindent\textbf{Proof}
+	In order to calculate the sum from one column in PPG array, the bits in that column and the carry bits generated from the previous column needs to be added. In the PPG array, there are \textit{k-1} columns, for which odd number of bits have to be added and these columns do not need half adders as shown in Property~\ref{p1_c3_p1}. When the number of carry bits of the previous column combines with the number of bits of the current column and produces even number of bits, the current column of the circuit requires a half adder. As the number of columns for an \textit{n$\times $n} bit multiplier is {2n}, and the column with the even number of bits (the even number is formed by the number of carry bits of the previous column and the number of bits of the current column) requires a half adder, the number of columns for half adders is:
+
+
+
+\begin{align}\label{p1_c3_eqn3}
+\textnormal{Number \;of\; Half\; adders}\; (N{}_{h}) = 2n-(k-1) = 2n - k + 1
+\end{align}
+
+\noindent According to Property~\ref{p1_c3_p3}, the total number of half and full adders required in MOA is \textit{nk+3k}. Hence, the total number of full adders is:
+
+\begin{align}\label{p1_c3_eqn4}
+\textnormal{Number\; of\; Full\; adders\;} (N{}_{f}) &= nk + 3k - (2n - k + 1)\\\nonumber
+&=nk + 4k - 2n - 1
+\end{align}
+	
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[b]{0.30\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/part1/chapter3/fig21_a.eps}
+		\caption{ }
+		\label{fig:p1_c3_fig21_a}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.30\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/part1/chapter3/fig21_b.eps}
+		\caption{ }
+		\label{fig:p1_c3_fig21_b}
+	\end{subfigure}
+	\caption{(a) $6\times6$ MOA (b) $8 \times 8 $ MOA}
+	\label{fig:p1_c3_fig21}
+\end{figure}
+
+\begin{example}\textnormal{
+	 In Figure~\ref{fig:p1_c3_fig21} (a) and Figure~\ref{fig:p1_c3_fig21} (b), H denotes HNG gate i.e., reversible full adder gate and PG denotes Peres Gate which is reversible half adder Gate. It can be seen from Figure Figure~\ref{fig:p1_c3_fig21} (a) that a {6$\times $6} MOA contains {6$\times $3+ 3$\times $3 = 27} gates (according to Equation 3.2). Morever, from Figure~\ref{fig:p1_c3_fig21} (b), it can be observed that a {8$\times $8} MOA contains {8$\times $4 + 3$\times $4 = 44} gates (according to Equation~\ref{p1_c3_eqn2}). The number of half adders in Figure~\ref{fig:p1_c3_fig21} (a) is {2$\times $6 - 3 + 1 = 10 }(according to Equation~\ref{p1_c3_eqn3}), where the number of full adders is {6$\times $3 + 4$\times $3 - 2$\times $6 -- 1 = 17.} The number of half adders in Figure~\ref{fig:p1_c3_fig21} (b) is {2$\times $8 - 4 + 1 = 13} (according to Equation~\ref{p1_c3_eqn3})), where the number of full adders is {8$\times $4 + 4$\times $4 - 2$\times $8 - 1 = 31} (according to Equation~\ref{p1_c3_eqn4}).}
+\end{example}
+
+\begin{property}\label{p1_c3_p5}\textnormal{
+	A Booth's recoded reversible \textit{n$\times $n }multiplier requires (\textit{17nk + 34k -- 4n -- 1) }quantum gates, where \textit{n} is the number of bits of multiplicand and multiplier, \textit{k} = $\left\lceil n/2\right\rceil $, \textit{n=2m}.}
+\end{property}
+
+\noindent\textbf{Proof}
+	According to Equation~\ref{p1_c3_eqn3} in Property~\ref{p1_c3_p3}, the number of quantum gates of PPG can be modeled using FG, \textit{R} cell, MFRG, FRG, MTG and TS-3 gates as below:
+\begin{align*}
+QG_{ppg}=& k\times 11 + (n-1) \times k\times 5 + k\times 5 + n\times k\times 6 + k\times 2 + 2 + (k-1)\times 1\\
+=&11nk + 14k + 1
+\end{align*}
+
+
+
+
+\noindent The number of half adders to realize the MOA is \textit{2n-k+1} for \textit{n=2m}, when \textit{k$>$2}. For \textit{k$<$2}, no half adder is required. 
+\begin{align*}
+T_{MOA}=& (nk + 3k - 2n + k - 1)HNG + (2n - k + 1) PG\\
+QG_{MOA}=& (nk + 4k - 2n - 1)\times 6+(2n - k + 1)\times 4\\
+=& 6nk + 20k - 4n - 2
+\end{align*}
+
+\noindent So, the total number of quantum gates of the multiplier can be modeled as below:
+
+\begin{align*}
+QG_{M} =& QG_{PPG} + QG_{MOA}\\
+=& 17nk + 34k - 4n - 1
+\end{align*}
+\begin{property}\textnormal{
+	A Booth's recoded reversible \textit{n$\times $n }multiplier generates \textit{(3nk + 12k -- n -- 1) }garbage outputs, where \textit{n} is the number of bits of multiplicand and multiplier, \textit{k} = $\left\lceil n/2\right\rceil $ and \textit{n=2m}.}
+\end{property}
+
+\noindent\textbf{Proof}
+	To generate one partial product, the \textit{R} cell, FRG,MFRG and MTG gates produce 2, 2, \textit{n} and 1 garbage outputs, respectively. MTG gates produce extra (\textit{n}-1) garbage outputs while generating the last partial product. As \textit{k} partial poducts are generated, the total number of garbage outputs generated by the PPG circuit can be modeled as below:
+
+
+\begin{align*}
+	G_{ppg}=&2k + 2k + nk + k + (n-1)\\
+	=& nk + 5k + n - 1
+\end{align*}
+
+\noindent In the MOA circuit, HNG gates generate two garbage outputs and PG gates generates one garbage output. The leftmost PG in the last row of MOA generates one more garbage as shown in Figure 3.17. As there are $nk+4k-2n-1$ HNG and $2n-k+1$ PG, the total number of garbage outputs generated by the MOA circuit can be modeled as below: 
+
+\begin{align*}
+	G_{MOA}=& (nk + 4k  - 2n - 1)\times 2+(2n - k + 1) \times 1+1\\	
+=& 2nk + 7k - 2n 
+\end{align*}
+
+\noindent Therefore, the total number of garbage outputs generated by the multiplier is given below:
+
+\begin{align*}
+G_{M}= 3nk + 12k - n - 1
+\end{align*}
+
+\begin{property}\textnormal{
+	A Booth's recoded reversible {n$\times $n }multiplier requires $(3nk + 10k - 1)$ constant inputs, where \textit{n} is the number of bits of multiplicand and multiplier, \textit{k} = $\left\lceil n/2\right\rceil $ and $n=2m$.}
+\end{property}
+
+\noindent\textbf{Proof}
+	In order to generate a partial product, the \textit{R} cell, MTG and TS-3 require 4, 2\textit{n} and 1 constant input, respectively. Moreover, $k-1$ Feynman gates require $k-1$ constant inputs and to  generate  the  first  partial  product two extra constant inputs are needed for the TS-3  gate in the first row of PPG as shown in Figure~\ref{fig:p1_c3_fig17}. So, the total number of constant inputs required by the PPG circuit can be modeled as below: 
+
+\begin{align*}
+C_{PPG} =& (4+2n+1) \times  k + (k-1) + 2\\
+=& 2 nk + 6k + 1
+\end{align*}
+
+
+\noindent Each of the HNG gates and Peres gates in the MOA requires one constant input. Also, it can be seen from the structure of partial products that each of them has a `1' in their most significant bit as shown in Figure~\ref{fig:p1_c3_fig16}, except the first and last partial products. So, \textit{k-2 }constant inputs are also added. The total number of constant inputs required by the PPG circuit can be modeled as below:
+
+\begin{align*}
+	C_{MOA}=& (nk + 4k - 2n -1)\times 1 + (2n - k + 1)\times 1 + (k - 2)\\
+=& nk + 4k -2 
+\end{align*}
+
+\noindent Therefore, the total number of constant inputs required by the multiplier is given below:
+
+\begin{align*}
+	C_{M}=& C_{PPG} + C_{MOA}\\	
+	=& 3nk + 10k - 1
+\end{align*}
+\begin{property}\textnormal{
+	A Booth's recoded reversible \textit{n$\times $n }multiplier requires $[\alpha(12nk + 29k - 6n - 2) + \beta(6nk + 10k - 2n - 1) + d(nk + 4k)]$ logical calculation or hardware complexity, where \textit{n} is the number of bits of multiplicand and multiplier, \textit{k} = $\left\lceil n/2\right\rceil $ and $n=2m$.}
+\end{property}
+
+\noindent\textbf{Proof}
+The hardware complexities of \textit{R} cell, MTG, MFRG, TS-3, FG and FRG are $10\alpha+\beta+3d,\; 3\alpha+2\beta,\; 4\alpha+2\beta+d, 2\alpha,\; \alpha$ and $2\alpha+4\beta+2d$, respectively. According to Equation~\ref{p1_c3_eqn1} in Property~\ref{p1_c3_p3}, the hardware complexity of PPG can be modeled as below: 
+
+
+\begin{align*}
+	H_{PPG }=& k(10\alpha+beta+3d) + (n-1)k(4alpha+2beta+d) +k(2alpha+4beta+2d) + nk(3alpha+2beta) + k(2alpha) + 2alpha + (k-1)alpha\\	
+	=& alpha(7nk+11k+1)+beta(4nk+3k)+d(nk+4k)
+\end{align*}
+
+\noindent The hardware complexities of HNG and PG gates are $5\alpha+2\beta$ and $2\alpha+\beta$, respectively. Using Property~\ref{p1_c3_p_4}, it can be shown that $nk+4k-2n-1$ HNG and $2n-k+1$ PG gates are required to realize the MOA. Therefore, the hardware complexity of MOA can be written as below:
+
+\begin{align*}
+H_{MOA}=& (nk+4k-2n-1 )(5\alpha+2\beta) + (2n-k+1)(2\alpha+\beta)\\	
+=&  \alpha(5nk+18k-6n-3) + \beta(2nk+7k-2n-1)	
+\end{align*}
+
+\noindent Therefore\textit{, }the total hardware complexity of the multiplier can be calculated as below:
+
+\begin{align*}
+H_{M}=& H_{PPG\ }+ H_{MOA}\\
+=& \alpha(12nk+29k-6n-2)+\beta(6nk+10k-2n-1)+d(nk+4k)	
+\end{align*}
+
+\begin{property}\textnormal{
+A Booth's recoded reversible \textit{n$\times $n }multiplier requires $(0.53n + 0.25k + 0.53)$ \textit{n}s delay, where \textit{n} is the number of bits of multiplicand and multiplier, \textit{k} = $\left\lceil n/2\right\rceil $ and $n=2m$.}
+\end{property}
+
+\textnormal\textbf{Proof}
+The critical path, shown in Figure~\ref{fig:p1_c3_fig22}, shows that the PPG circuit requires one Feynman Gate, one \textit{R} cell, $k+1$ Modified Toffoli Gates, $n-1$ Modified Fredkin Gates and one TS-3 Gate. The critical path is shown in Figure~\ref{fig:p1_c3_fig22}, where FG, \textit{R} Cell, MTG, FRG, MFRG and TS-3 are indicated by node 1, 2, 3, 4, 5 and 6, respectively. So, the delay of the PPG circuit can be modeled as below:
+
+
+\begin{align*}
+ D_{PPG} =& D_{FG} + D_{R} + (k+1) D_{MTG} + (n-1) D_{MFRG} + D_{TS-3}\\
+=&(0.1 + 0.49 + (k+1)\times  0.15 + (n-1)\times  0.23 + 0.12) \;ns\\
+=&(0.23n + 0.15k + 0.63) \;ns
+\end{align*}
+
+\noindent From Figure~\ref{fig:p1_c3_fig23}, it can be observed that the critical path delay is the delay obtained from the gates in the lowest layer of the MOA. The lowest layer contains $(2n-k+1)$ PG and $k-1$ HNG. So, the delay of the MOA can be calculated as below:
+
+
+\begin{align*}
+D_{MOA} =& ((k -1)\times 0.25+ (2n-k+1)\times 0.15) \;ns\\
+=& (0.30n + 0.1k -0.1) \;ns
+\end{align*}
+
+\noindent So, the delay of the multiplier can be modeled as below:
+
+
+\begin{align*}
+D_{M}  =& D_{PPG} + D_{MOA}\\
+=&(0.53n+0.25k+0.53) \;ns
+\end{align*}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{chapters/part1/chapter3/fig22.eps}
+	\caption{Critical path for an {8$\times $8} PPG for Reversible Booth's Multiplier}
+	\label{fig:p1_c3_fig22}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{chapters/part1/chapter3/fig23.eps}
+	\caption{Critical Path for a {6$\times $6} MOA for Reversible Booth's Multiplier}
+	\label{fig:p1_c3_fig23}
+\end{figure}
+
+\begin{property}\textnormal{
+	The area of a Booth's recoded quantum \textit{n$\times $n }multiplier is $(850nk + 1700k - 200n - 50)A^{0}$, where \textit{n} is the number of bits of multiplicand and multiplier, \textit{k} = $\left\lceil n/2\right\rceil $, \textit{n=2m} and $A^{0}$ is the unit of measuring area.}
+\end{property}
+
+\noindent\textbf{Proof}
+	From Property~\ref{p1_c3_p5}, it is found that the number of quantum gates of PPG can be modeled using FG, \textit{R} cell, MFRG, FRG, MTG and TS-3 gates as below:
+
+
+\begin{align*}
+QG_{ppg}=& k\times 11 + (n-1) \times k\times 5 + k\times 5 + n\times k\times 6 + k\times 2 + 2 + (k-1)\times 1\\
+=& 11nk + 14k + 1
+\end{align*}
+
+\noindent The number of half adders to realize the MOA is $2n-k+1$ for $n=2m$, when $k>2$. For $k<2$, no half adder is required. 
+
+\begin{align*}
+	T_{MOA}=& (nk + 3k - 2n + k - 1)HNG + (2n - k + 1) PG\\	
+QG_{MOA}=& (nk + 4k - 2n - 1)\times 6+(2n - k + 1)\times 4\\	
+=& 6nk + 20k - 4n - 2
+\end{align*}
+
+\noindent So, the total number of quantum gates of the multiplier can be modeled as below:
+
+\begin{align*}
+QG_{M} =& QG_{PPG} + QG_{MOA}\\	
+=& 17nk + 34k - 4n - 1
+\end{align*}
+
+\noindent Therefore, the total area of the quantum multiplier circuit can be modeled as below:
+
+\begin{align*}
+	A_{M} =&50 \times QG_{M}\\	
+	=&50 \times  (17nk + 34k - 4n - 1)A^{0}\\
+	=& (850nk + 1700k - 200n - 50)A^{0}
+\end{align*}
+
+
+
+\begin{property}\textnormal{
+	The power of a Booth's recoded quantum $n\times n$ multiplier is $(2419.1nk + 4838.2k - 569.2n - 142.3) meV$, where \textit{n} is the number of bits of multiplicand and multiplier, $k = \left\lceil n/2\right\rceil $, $n=2m$ and \textit{meV} is the unit of measuring power.}
+\end{property}
+
+\noindent\textbf{Proof}\textnormal{
+From Property~\ref{p1_c3_p5}, it is found that the number of quantum gates of PPG can be modeled using FG, \textit{R} cell, MFRG, FRG, MTG and TS-3 gates as below:}
+
+
+\begin{align*}
+QG_{ppg} =& k\times 11 + (n-1) \times k\times 5 + k\times 5 + n\times k\times 6 + k\times 2 + 2 + (k-1)\times 1\\
+=&11nk + 14k + 1	
+\end{align*}
+
+\noindent The number of half adders to realize the MOA is $2n-k+1$ for $n=2m$, when $k>2$. For $k<2$, no half adder is required. 
+
+\begin{align*}
+T_{MOA}=& (nk + 3k - 2n + k - 1)HNG + (2n - k + 1) PG\\	
+QG_{MOA}=& (nk + 4k - 2n - 1)\times 6+(2n - k + 1)\times 4\\	
+=& 6nk + 20k - 4n - 2	
+\end{align*}
+
+\noindent So, the total number of quantum gates of the multiplier can be modeled as below:
+
+\begin{align*}
+	QG_{M}=& QG_{PPG}+ QG_{MOA}\\
+	=& 17nk + 34k - 4n - 1
+\end{align*}
+
+\noindent Therefore, the total power of the quantum multiplier circuit can be modeled as below:
+
+\begin{align*}
+P_{M} =&142.3 \times QG_{M} =142.3 \times  (17nk + 34k - 4n - 1)meV\\
+=& (2419.1nk + 4838.2k - 569.2n - 142.3) meV
+\end{align*}
+
+
+\begin{property}\textnormal{
+A Booth's recoded quantum $n\times n$ multiplier requires ($17nk + 34k - 4n - 1) \Delta$ delay, where \textit{n} is the number of bits of multiplicand and multiplier, $k = \left\lceil n/2\right\rceil $, $n=2m$ and $\Delta$ is the unit delay.	}
+\end{property}
+
+\noindent\textbf{Proof}
+	From Property~\ref{p1_c3_p5}, it is found that the number of quantum gates of PPG can be modeled using FG, \textit{R} cell, MFRG, FRG, MTG and TS-3 gates as below:
+
+\begin{align*}
+QG_{ppg} =& k\times 11 + (n-1) \times k\times 5 + k\times 5 + n\times k\times 6 + k\times 2 + 2 + (k-1)\times 1\\	
+=&11nk + 14k + 1
+\end{align*}
+
+\noindent The number of half adders to realize the MOA is $2n-k+1$ for $n=2m$, when $k>2$. For $k<2$, no half adder is required. 
+
+\begin{align*}
+	T_{MOA}=&(nk + 3k - 2n + k - 1)HNG + (2n - k + 1) PG\\	
+	QG_{MOA}=& (nk + 4k - 2n - 1)\times 6+(2n - k + 1)\times 4\\	
+	=& 6nk + 20k - 4n - 2
+\end{align*}
+
+\noindent So, the total number of quantum gates of the multiplier can be modeled as below:
+
+\begin{align*}
+	QG_{M} =& QG_{PPG} + QG_{MOA}\\
+	=& 17nk + 34k - 4n - 1
+\end{align*}
+
+\noindent Therefore, the total delay of the quantum multiplier circuit can be modeled as below:
+
+\begin{align*}
+	D_{QG}= (17nk + 34k - 4n - 1) \Delta
+\end{align*}
+
+\begin{property}\textnormal{
+	A Booth's recoded quantum $n\times n$ multiplier requires $[\sigma (18k + 8nk - 2n) + \Omega (16k + 10nk - 2n - 1) ]$ quantum gate calculation complexity, where \textit{n} is the number of bits of multiplicand and multiplier, $k = \left\lceil n/2\right\rceil $, $n=2m$, $\sigma$ is a CNOT gate calculation complexity and $\Omega$ is a Controlled-V or Controlled-V${}^{+\ }$ gate calculation complexity.}
+\end{property}
+
+\noindent\textbf{Proof}	
+	The quantum gate calculation complexities of \textit{R} cell, MTG, MFRG, TS-3, FG and FRG are $7\sigma+3\Omega$, $3\sigma+3\Omega$, $3\sigma+3\Omega$, $2\sigma$, $\sigma$ and $4\sigma+3\Omega$, respectively. According to Equation~\ref{p1_c3_eqn1} in Property~\ref{p1_c3_p3}, the quantum gate calculation complexity of PPG can be modeled as below:
+
+
+\begin{align*}
+ QGC_{PPG}=& k(7\sigma + 3\Omega) + (n-1) k(3\sigma+ 3\Omega) + k(4\sigma+ 3\Omega) + nk(3\sigma+ 3\Omega) + k(2\sigma) + 2\sigma + (k-1)\sigma\\
+=&\sigma (11k + 6nk + 1)+\Omega (3k + 6nk)	
+\end{align*}
+
+\noindent The quantum gate calculation complexities of HNG and PG gates are $2\sigma+4\Omega$ and $\sigma+3\Omega$, respectively. Using Property~\ref{p1_c3_p_4}, it can be shown that $nk+4k-2n-1$ HNG and $2n-k+1$ PG gates are required to realize the MOA. Therefore, the quantum gate calculation complexity of MOA can be written as below:
+
+\begin{align*}
+QGC_{MOA} =& (nk+4k - 2n - 1)( 2\sigma+ 4\Omega) + (2n - k + 1)(\sigma+3\Omega)\\	
+=&  \sigma (2nk + 7k - 2n - 1) + \Omega (4nk + 13k - 2n - 1)	
+\end{align*}
+
+\noindent Therefore\textit{, }the total quantum gate calculation complexity of the multiplier can be calculated as below:
+
+\begin{align*}
+QGC_{M} =& QGC_{PPG} + QGC_{MOA}\\	
+=& \sigma (11k+6nk+1)+\Omega (3k+6nk)+\sigma (2nk+7k-2n-1) + \Omega (4nk+13k-2n-1)\\	
+=& \sigma (18k + 8nk - 2n)+\Omega (16k + 10nk - 2n - 1)
+\end{align*}
+	
+	\section{Summary}
+	This chapter presents the design of a reversible signed multiplier which is based on Booth's recoding. The multiplier has been designed in three steps. Firstly, a Recoding Cell (R Cell) has been designed to produce the recoded bits. Secondly, a Partial Product Generation circuit (PPG) has been constructed to generate the partial products and finally, a Multi-Operand Addition circuit (MOA) has been developed to add the partial products. To realize a compact design, the reversible and quantum gates have been introduced. A generalized architecture of the \textit{n $\times$ n} multiplier has been presented, where \textit{n} is the number of bits of multiplicand and multiplier. The algorithms are described to calculate area and power of the quantum multiplier. The design methodology can be integrated as a part of reversible central processing unit (CPU), reversible signal processing and reversible arithmetic and logic unit (ALU) optimized in terms of ancillary inputs and garbage outputs.
+	
+	\section*{Bibliography}
+	
+	\noindent [1] R. Landauer, ``\textit{Irreversibility and heat generation in the computing process}'', IBM Journal of Research and Development, vol. 5, pp. 183-- 191, 1961.
+	
+	\noindent [2] C. H. Bennet, ``\textit{Logical reversibility of computation}'', IBM J. Research and Development, vol. 17, no. 6, pp. 525-532, 1973.
+	
+	\noindent [3] R. Zhou, Y. Shi, H. Wang and J. Cao, ``\textit{Transistor realization of reversible "zs" series gates and reversible array multiplier}'',Microelectron. J., vol. 42, no. 2, pp. 305--315, 2011. 
+	
+	\noindent [4] R. P. Feynman,``\textit{Quantum mechanical computers}'', Foundations of physics, vol. 16, no. 6, pp. 507-531, 1986.
+	
+	\noindent [5] A. Peres, ``\textit{Reversible Logic and Quantum Computers}'', American Physical Society, vol. 151, pp. 3266-3276, 1985.
+	
+	\noindent [6] T. Toffoli, ``\textit{Reversible Computing}'', Tech memo MIT/LCS/TM-151, MIT Lab for Computer Science, 1980.
+	
+	\noindent [7] H. Thapliyal and N. Ranganathan, ``\textit{Design of reversible sequential circuits optimizing quantum cost, delay, and garbage outputs}'', J. Emerg. Technol. Comput. Syst.,vol. 6, no. 4, 2010.
+	
+	\noindent [8] M. Saeedi, M. S. Zamani, M. Sedighi and Z. Sasanian, ``\textit{Reversible circuit synthesis using a cycle-based approach}'', J. Emerg. Technol. Comput. Syst.,vol. 6, no. 4, 2010.
+	
+	\noindent [9] C. Baugh and B. Wooley, ``\textit{A two's complement parallel array multiplication algorithm}'', IEEE Transactions on Computers, vol. 22, pp. 1045--1047, 1973.
+	
+	\noindent [10] G. W. Bewick, ``\textit{Fast multiplication : Algorithms and implementation}'', Stanford University, Tech. Rep., 1994. 
+	
+	\noindent [11] E. P. A. Akbar, M. Haghparast and K. Navi, ``\textit{Novel design of a fast reversible wallace sign multiplier circuit in nanotechnology}'',Microelectron. J., vol. 42, no. 8, pp. 973--981, 2011. 
+	
+	\noindent [12] A. K. Biswas, M. M. Hasan, A. R. Chowdhuryand H. M. H.Babu, ``\textit{Efficient approaches for designing reversible binary coded decimal adders}'',Microelectron. J., vol. 39, no. 12, pp. 1693--1703, 2008. 
+	
+	\noindent [13] M. Nielsen and I. Chuang, ``\textit{Quantum Computation and Quantum Information}'', Cambridge Univ. Press, 2000.
+	
+	\noindent [14] D. Deustch, "\textit{Quantum Computational Networks}", Proceedings of the Royal Society of London. Series A, Mathematical and Physical Sciences, vol. 425, no. 1868, pp. 73-90, 1989.
+	
+	\noindent [15] P. Schiopu and C. Schiopu, ``\textit{High-speed and low-power electronic systems}'', 24${}^{th}$International Spring Seminar on Electronics Technology: Concurrent Engineering in Electronic Packaging, pp. 92--96, 2001.
+	
+	\noindent [16] H. G. Rangaraju, V. Hegde, K. B. Raja and K. N. Muralidhara, ``\textit{Design of Low Power Reversible Binary Comparator}'', Elsevier, Procedia Engineering, 2011.
+	
+	\noindent [17] D. Maslov and G. W. Dueck, ``\textit{Reversible cascades with minimal garbage}'', Trans. Comp.-Aided Des. Integ. Cir. Sys., vol. 23, no. 11, pp. 1497--1509, 2006. 
+	
+	\noindent [18] A. A. Balandin and K. L. Wang, ``\textit{Implementation of Quantum Controlled-NOT Gates Using Asymmetric Semiconductor Quantum Dots}'', Quantum Computing and Quantum Communications QCQC, pp. 460-467,1998.
+	
+	\noindent [19] X. Li, D. Steel, D. Gammon and L. J. Sham, ``\textit{Quantum Information Processing Based on Optically Driven Semiconductor Quantum Dots}'' Optics and Photonics News, vol. 15, no. 9, pp. 38-43, 2004.
+	
+	\noindent [20] M. Mohammadi and M. Eshghi, ``\textit{On figures of merit in reversible and quantum logic Designs}'', Quantum Information Processing,vol. 8, no. pp. 297-318, 2009.
+	
+	\noindent [21] B. Parhami, ``\textit{Fault tolerant reversible circuits}'', In Proc. of 40${}^{th}$Asimolar Conference Signals, Systems and Computers. Pacific Grove, CA, pp. 1726--1729, 2006.
+	
+	\noindent [22] E. Fredkin and T. Toffoli, ``\textit{Conservative logic}'', International Journal of Theoretical Physics, vol. 21, pp. 219--253, 1982.
+	
+	\noindent [23] H. Thapliyal, S. Kotiyal and M. B. Srinivas, ``\textit{Novel BCD Adders and Their Reversible Logic Implementation for IEEE 754r Format}'', Proceedings of 19${}^{th}$International Conference on VLSI Design, pp.387-392, 2006.
+	
+	\noindent [24] M. Haghparast, M. Mohammadi, K. Navi and M. Eshghi, ``\textit{Optimized reversible multiplier circuit}'', Journal of Circuits, Systems and Computers, vol. 18, no. 02, pp. 311--323, 2009.
+	
+	\noindent [25]B. Parhami, ``\textit{Computer arithmetic: algorithms and hardware designs}'', Oxford, UK: Oxford University Press, 2000.

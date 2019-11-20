@@ -1012,7 +1012,7 @@ split_it = commonDatas.split()
 #     else:
 #         print('Not Found!')
 
-file1 = open("F:\\Test Code\\LatexPy\\doc\\chapter1.tex","r+")
+file1 = open("/root/Code/Personal/Git Hub/LatexPy/doc/chapter1.tex","r+")
 datas = file1.read()
 # print (datas.split())
 f = 0
@@ -1061,13 +1061,21 @@ finalIndexing = random.choices(finalInexingList, k=10)
 print(finalIndexing)
 
 file1.close()
-file1 = open("F:\\Test Code\\LatexPy\\doc\\Temp.tex","w+")
+file1 = open("/root/Code/Personal/Git Hub/LatexPy/doc/chapter1.tex","r+")
+file2 = open("/root/Code/Personal/Git Hub/LatexPy/output/output.tex","a+")
+lines = file1.readlines()
 # datas = file1.read()
+temp = []
 for eachIndexing in finalIndexing:
     # print(eachIndexing)
-    for data in datas.split():
-        # print(data)
-        if data == eachIndexing:
-            print(data)
-            file1.write(data)
-file1.close()
+    for line in lines:
+        listx = list(line.split())
+        for data in line.split():
+            if data == eachIndexing:
+                editIndex = listx.index(data)
+                listx[editIndex] = '\index{'+data+'}'
+                # temp.append('\index{'+data+'}')
+                # print(temp)
+        file2.write(' '.join(listx)+ "\n")
+# file1.write(temp)
+# print(temp)

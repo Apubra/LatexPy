@@ -1057,12 +1057,14 @@ print('Not Found:',nf)
 print(len(filterData))
 finalInexingList = list(set(filterData))
 print(len(finalInexingList))
-finalIndexing = random.choices(finalInexingList, k=10)
+val = int(len(finalInexingList)*.1)
+print('vaue...',val)
+finalIndexing = random.choices(finalInexingList, k=val)
 print(finalIndexing)
 
 file1.close()
 file1 = open("/root/Code/Personal/Git Hub/LatexPy/doc/chapter1.tex","r+")
-file2 = open("/root/Code/Personal/Git Hub/LatexPy/output/output.tex","a+")
+file2 = open("/root/Code/Personal/Git Hub/LatexPy/output/chapter1.tex","a+")
 lines = file1.readlines()
 # datas = file1.read()
 temp = []
@@ -1073,7 +1075,7 @@ for eachIndexing in finalIndexing:
         for data in line.split():
             if data == eachIndexing:
                 editIndex = listx.index(data)
-                listx[editIndex] = '\index{'+data+'}'
+                listx[editIndex] = data+'~\index{'+data+'}'
                 # temp.append('\index{'+data+'}')
                 # print(temp)
         file2.write(' '.join(listx)+ "\n")

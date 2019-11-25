@@ -1,0 +1,827 @@
+\chapter{Reversible Adder and Subtractor Circuit}
+\label{ch:p3__chapter2}
+
+%\settocdepth{section}
+%\cftaddtitleline{toc}{section}{\emph{\chapterauthor}}{}
+%\settocdepth{chapter}
+
+In computers, numbers are stored in straight binary format. Due to inherent characteristics of floating-point numbers and limitations on storing formats, not all floating-point numbers can be represented with desired precision. So, computing in decimal format is gaining popularity~\index{popularity} because the precision can be avoided in this format. However, hardware support for binary arithmetic allows~\index{allows} it to be performed faster than decimal arithmetic. Faster hardware for decimal floating-point arithmetic is also imminent as it has its importance in financial and Internet-based applications. So, faster circuits for Binary Coded Decimal (BCD) numbers have great impact, as it is likely to be incorporated in more complex circuits like future mathematical processors.
+
+\section{Reversible Multi-Operand {\it n}-Digit Decimal Adder}
+
+Reversible multi-operand {\it n}-digit is capable to add as many operands as possible and there is no boundary for number of digit in each operand. Design of such circuit should be scalable~\index{scalable} and compact. In this circuit number of carry of each stage depends~\index{depends} on the number of operands and equal to $\lceil{log(m)}\rceil$, where {\it m} is the number of operands. The basic mechanism~\index{mechanism} of multi-operand {\it n}-digit decimal adder is shown in Figure~\ref{fig:p1_c2_fig1}.
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.8\textwidth]{chapters/part1/chapter2/fig1.eps}
+\caption{Multi-Operand {\it n}-Digit Decimal Adder}
+\label{fig:p1_c2_fig1}
+\end{figure}
+
+The design of reversible multi-operand {\it n}-digit decimal adder is composed of three components: CSA (Carry Skip Adder), CLA (Carry Look-Ahead Adder) and Carry Generator unit, Adjust Circuit and final CLA unit. Figure~\ref{fig:p1_c2_fig2} shows~\index{shows} the architecture of {\it m}-operand {\it n}-digit decimal adder. Figure~\ref{fig:p1_c2_fig3} shows single {\it i${}^{th}$} digit block diagram. Carry generator generates carry for {\it i${}^{th}$} digit i.g., {\it C${}_{i}$}. Then this {\it C${}_{i}$}, {\it C${}_{i-1}$} and sum, {\it S${}_{i}$,} is used to generate Adjust digit, {\it Adj${}_{i}$}, which is used to adjust BCD digit. Then {\it S${}_{i}$} is added with {\it Adj${}_{i}$} to get adjust BCD digit. Algorithm~\ref{alg:part1_c2_alg1} describes thecwhole process.
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=\textwidth]{chapters/part1/chapter2/fig2.eps}
+\caption{The Architecture of Reversible Multi-Operand {\it n}-Digit Decimal Adder.}
+\label{fig:p1_c2_fig2}
+\end{figure}
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.4\textwidth]{chapters/part1/chapter2/fig3.eps}
+\caption{The Architecture of Reversible Single Digit Block of {\it m}-Operand {\it n}-Digit Adder}
+\label{fig:p1_c2_fig3}
+\end{figure}
+
+\counterwithin{algorithm}{section}
+\begin{algorithm}[!h]
+\caption{Reversible {\it m}-Operand{\it n--}Digit Decimal Adder, when {\it n$\bold{\ge}$ 1}}
+Take \textit{n}-digit \textit{m} numbers {\it A${}_{m}$, {\dots}, A${}_{2}$, A${}_{1}$}
+\label{alg:part1_c2_alg1}
+\\Input: {\bf {\it A${}_{m}$, {\dots}, A${}_{2}$, A${}_{1}$, (all are n-digit numbers)}}
+
+{\bf {\it }}Output: {\bf {\it Sum, Carry(log${}_{2}$(n)-bit)}}
+\begin{algorithmic}[1]
+
+\STATE Begin
+\FOR{ \textit{n=0 \TO n-1} }
+\STATE Get one 3-operand BCD block, Blk
+\STATE Generate \textit{S}${}_{i}$[3:0]
+\STATE Get\textit{ C${}_{i+1}$ = generateCarry()}
+\STATE \textit{Adj}${}_{i}$[3:0] = \textit{generateAdjustBits(S${}_{i}$}, C${}_{i}$,C${}_{i+1}$);
+\STATE Set, \textit{Result}${}_{i}$ = \textit{sum(S}${}_{i}$[3:0], \textit{Adj}${}_{i}$[3:0])
+\ENDFOR
+\STATE set, {\it Sum} =\textit{ Result}
+
+\STATE set, {\it Carry} = \textit{C}${}_{n}${\bf }
+\STATE End
+\end{algorithmic}
+\end{algorithm}
+
+To implement this design, it requires Full Adder, Carry Skip Adder, Carry Look-Ahead Adder. In the following subsections, designs of full adder, carry skip adder and carry look-ahead adder are described. An example of {\it 3}-operand {\it n}-digit decimal adder is also shown at the end of this section.
+
+\subsection{Full Adder}
+Full adder is a versatile and widely~\index{widely} used building block in digital arithmetic processing.A Full Adder is a combinational~\index{combinational} circuit that performs the arithmetic sum of three input~\index{input} bits. It consists of three inputs and two outputs. Three of the input~\index{input} variables can be defined as {\it A, B, C${}_{in}$} and the two output variables can be defined as {\it S} for sum, {\it C${}_{out}$} for carry.
+
+\begin{align*}
+S &= A \oplus B \oplus C{}_{in}\\
+C{}_{out} &= AB \oplus BC{}_{in\ }\oplus C{}_{in}A
+\end{align*}
+
+\noindent\textbf{The FAG Gate:} In this part, a {4$\times$4} reversible gate, namely FAG gate, is described. The input vector, {\it I${}_{v}$} and output vector, {\it O${}_{v}$} of the gate are as follows:
+
+\begin{align*}
+I_{v} &= {a, b, c, d}; \;\textnormal{and}\\
+O_{v} &= {a\oplus d, a\oplus b\oplus d, a\oplus b\oplus c\oplus d, ab\oplus bc\oplus ca\oplus bd\oplus cd\oplus d}
+\end{align*}
+
+Figure~\ref{fig:p1_c2_fig4} shows the diagram of the {4$\times$4}reversible FAG gate and Figure~\ref{fig:p1_c2_fig5} shows its quantum representation. The quantum cost of FAG gate is 6. The corresponding truth table of the gate is shown in Table~\ref{tab:p1_c2_tab1}. It can be verified from the truth table that the input pattern corresponding to a particular output pattern can be uniquely determined.
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.6\textwidth]{chapters/part1/chapter2/fig4.eps}
+\caption{{4$\times$4} Reversible FAG Gate}
+\label{fig:p1_c2_fig4}
+\end{figure}
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.8\textwidth]{chapters/part1/chapter2/fig5.eps}
+\caption{Reversibility of {4${\times}$4} Reversible FAG Gate}
+\label{fig:p1_c2_fig5}
+\end{figure}
+
+\begin{table}
+\centering
+\caption{Reversibility of {4{$\times$}4} Reversible FAG Gate\label{tab:p1_c2_tab1}}{%
+\begin{tabular}{cccc|cccc} \hline
+\multicolumn{4}{c|}{INPUT} & \multicolumn{4}{c}{OUTPUT} \\ \hline
+%$I_7$ & $I_6$ & $I_5$ & $I_4$ & $I_3$ & $I_2$ & $I_1$ & $I_0$ & A & B & C \\ \hline
+A & B & C & D & P & Q & R & S \\
+0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 1 & 1 & 1 & 1 & 1 \\
+0 & 0 & 1 & 0 & 0 & 0 & 1 & 0 \\
+0 & 0 & 1 & 1 & 1 & 1 & 0 & 0 \\
+0 & 1 & 0 & 0 & 0 & 1 & 1 & 0 \\
+0 & 1 & 0 & 1 & 1 & 0 & 0 & 0 \\
+0 & 1 & 1 & 0 & 0 & 1 & 0 & 1 \\
+0 & 1 & 1 & 1 & 1 & 0 & 1 & 0 \\
+1 & 0 & 0 & 0 & 1 & 1 & 1 & 0 \\
+1 & 0 & 0 & 1 & 0 & 0 & 0 & 1 \\
+1 & 0 & 1 & 0 & 1 & 1 & 0 & 1 \\
+1 & 0 & 1 & 1 & 0 & 0 & 1 & 1 \\
+1 & 1 & 0 & 0 & 1 & 0 & 0 & 1 \\
+1 & 1 & 0 & 1 & 0 & 1 & 1 & 1 \\
+1 & 1 & 1 & 0 & 1 & 0 & 1 & 1 \\
+1 & 1 & 1 & 1 & 0 & 1 & 0 & 0 \\\hline
+\end{tabular}}
+
+\end{table}
+
+
+In this chapter, FAG gate is used to design Full adder circuit. Quantum realization of the FAG gate is shown in Figure~\ref{fig:p1_c2_fig6}. Here, dotted rectangle is equivalent to a {2$\times$2} CNOT gate. So, the quantum cost of the FAG gate is six.
+
+
+\noindent\textbf{Reversible FAG Gate as Full Adder:} The FAG gate is designed in such a way that it can be used as full adder in efficient way. Using fourth input as constant input zero (0), propagate, sum and carry can be generated as shown in Figure~\ref{fig:p1_c2_fig4}. Algorithm~\ref{alg:part1_c2_alg2} shows the design procedure of the full adder.
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.6\textwidth]{chapters/part1/chapter2/fig6.eps}
+\caption{Reversible FAG Gate as Full Adder}
+\label{fig:p1_c2_fig6}
+\end{figure}
+\counterwithin{algorithm}{subsection}
+\begin{algorithm}[H]
+\caption{Design of a Full Adder Circuit}
+Input: {\bf {\it A, B, C${}_{in}$}}\\
+Output: {\bf {\it Sum, Carry}}
+\label{alg:part1_c2_alg2}
+
+\begin{algorithmic}[1]
+
+\STATE Begin
+\STATE Take a FAG gate, (a, b, c, d)$\Leftrightarrow$(p, q, r, s)
+\STATE Set, FAG.a={\bf {\it A}}; FAG.b={\bf {\it B}}; \STATE FAG.c={\bf {\it $C_{in}$}}; FAG.d=0;
+\STATE Output, {\bf {\it Sum}} = FAG.r and
+\STATE {\bf {\it Carry}} = FAG.s{\bf }
+\STATE End
+\end{algorithmic}
+\end{algorithm}
+\counterwithin{property}{subsection}
+\begin{property}\textnormal{
+A full adder can be realized with at least six quantum cost.}
+\end{property}
+
+\noindent\textbf{Proof} Required output, sum and carry can be generated by the following equations:
+\begin{align*}
+S &= A \oplus B \oplus C{}_{in}\\
+C{}_{out} &= AB \oplus BC{}_{in\ }\oplus C{}_{in}A = AB \oplus C{}_{in}(B\oplus A)
+\end{align*}\textnormal{
+In reversible logic, each logical operation requires at-least one quantum gate. From the above equations, there are six logical operations in the full adder circuit; it requires at-least six quantum gates. So for each operation if the minimum single unit cost is required, then it needs the minimum required cost which is six.}
+\counterwithin{example}{subsection}
+
+\begin{example}\textnormal{
+In Figure~\ref{fig:p1_c2_fig6}, design of a full adder is shown. It has six logical operations.}%The full adder is designed with six quantum cost as shown in Figure~\ref{fig:p1_c2_fig5}.
+\end{example}
+\subsection{Carry Skip Adder}
+The carry skip adder reduces the delay due to the carry computation. In this adder, when the input is a logical one, the cell will propagate the carry input to the carry output. Therefore, the {\it i${}^{th}$} full adder carry input, {\it C${}_{i}$}, will propagate to its carry output, {\it C${}_{i+1}$}, when {\it $P_i = x{}_{i}$$\oplus $$y{}_{i}$}. Furthermore, multiple full adders, called~\index{called} a block, can generate a ``block'' propagate signal to detour the incoming carry around to the block's carry output signal. Figure~\ref{fig:p1_c2_fig8} shows the block diagram of an {\it n}-bit carry skip adder. Each block is a small ripple carry adder producing the block's sum and carry bits. However, each block quickly~\index{quickly} calculates~\index{calculates} whether the block's carry input is propagated to its carry output.
+
+The block carry input {\it C${}_{in}$} is propagated as the block carry output {\it C${}_{out}$}, if the block propagate {\it P} is one. The block propagate signal is generated with an AND gate. Figure~\ref{fig:p1_c2_fig7} shows the carry skip compatible full adder constructed with FAG. The wors case delay of the carry skip adder happens when the carry is generated in the very first full adder stages in the first block, generates the carry without using all the intermediate blocks, and ripples through the full adder stages of the last block.
+
+\subsubsection{Design of Carry Skip Adder}
+The carry skip adder propagates the block carry input to the next block if block group propagate signal {\it P} is one. Figure~\ref{fig:p1_c2_fig7} shows the {\it n}-bit carry skip adder circuit. Here the {\it m}-bit chunk is used for carry skip. Thus, $k=\lceil{m}\rceil$ blocks are required. Figure~\ref{fig:p1_c2_fig8} shows block diagram of the \textit{m}-bit carry skip adder using Algorithm~\ref{alg:part1_c2_alg3}.
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=\textwidth]{chapters/part1/chapter2/fig7.eps}
+\caption{The {\it n}-bit Carry Skip Adder Circuit}
+\label{fig:p1_c2_fig7}
+\end{figure}
+
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.8\textwidth]{chapters/part1/chapter2/fig8.eps}
+\caption{Single Block Carry Skip Adder Circuit}
+\label{fig:p1_c2_fig8}
+\end{figure}
+
+The 4-bit carry skip adder is shown in Figure~\ref{fig:p1_c2_fig9}. Here 4-FAG is used to generate sum and carry. In this figure, the AND-OR gate combination is used in the bottom for carry skip part. Rectangle part of that circuit is called Carry Skip Block circuit. Design of Carry Skip circuit using reversible gates is shown in Figure~\ref{fig:p1_c2_fig10}. In this design four Peres gates is needed.
+
+The AND-OR carry skip generates a carry out, i.e., $C_{out}=1$. When the most significant~\index{significant} carry $C_4$
+of the full adder equals to one, the block propagates \textit{P} equal to one, where the carry input
+$C_{in}$ signal is equal to zero.
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.8\textwidth]{chapters/part1/chapter2/fig9.eps}
+\caption{Reversible Carry Skip Adder Circuit for Single Digit}
+\label{fig:p1_c2_fig9}
+\end{figure}
+
+
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.8\textwidth]{chapters/part1/chapter2/fig10.eps}
+\caption{Reversible Carry Skip Circuit}
+\label{fig:p1_c2_fig10}
+\end{figure}
+\counterwithin{algorithm}{subsubsection}
+\begin{algorithm}[!h]
+\caption{Design of {\it m}-bit Single Chunk Carry Skip Adder Circuit}
+\label{alg:part1_c2_alg3}
+Input: { {\it A, B}; (both are {\it m}-bit binary number), C${}_{out}$(\{\it1}-bit)\\
+Output: { { Sum ({\it m}-bit), Carry (1-bit)}}
+\begin{algorithmic}[1]
+
+\STATE Begin
+\FOR{ \textit{n=}0 \TO \textit{m-1} }
+\STATE Take one FAG gate, $F{}_{i}$
+\STATE Set $F{}_{i}.a=A{}_{i}$; $F{}_{i}.b=B{}_{i}$; $F{}_{i}.c=F{}_{i-1}.s$; $F{}_{i}.d=0$;
+\STATE Output, {\bf {\it Sum${}_{i}$}}=$F{}_{i}.r$;
+\STATE Get, {\bf {\it Sum${}_{i}$}}=$F{}_{i}.r$;
+\ENDFOR
+\STATE { set, {\it Carry} = }($F{}_{0}.q$ {AND} $F{}_{1}.q$ {AND }{\dots} {AND} $F{}_{m-1}.q)${ OR {\it C${}_{out}$}}
+\STATE End
+\end{algorithmic}
+\end{algorithm}
+\counterwithin{property}{subsubsection}
+\begin{property}\textnormal{
+A reversible {\it n}-bit comparator requires 455 ${.}$ {\it n $\mu m{}^{2}$} area, where {\it n} is the number of bits in each operand.}
+\end{property}
+
+\noindent \textbf{Proof} For {\it n}-digit carry skip adder, {\it n} single digit blocks are needed. From Figure~\ref{fig:p1_c2_fig9}, it can be shown that for single bit carry skip adder, four full adders and one carry skip block are needed. Area of {1}-digit carry skip adder is
+\begin{align*}
+A = 4A{}_{FA} + A{}_{CSB}
+\end{align*}
+
+
+The areas of {\it A${}_{FA}$} block and {\it A${}_{CSB\ }$}block are { 90 $\mu m{}^{2}$} and 9{ 5 $\mu m{}^{2}$} respectively. So, the total area of a single bit carry skip adder can be modeled as below:
+
+\begin{align*}
+A = 4 . 90 + 95 \mu m{}^{2\ }=455 \mu m{}^{2}
+\end{align*}
+
+So, the area for single digit carry skip adder is {455 $\mu m{}^{2}$. }Thus, the area of {\it n}-digit carry skip adder, {$ A = 455 \times n$ $\mu m{}^{2}$}.
+
+
+\begin{property}\textnormal{
+A reversible {\it n}-bit comparator requires 455 ${\times}$ {\it n $\mu m{}^{2}$} area, where {\it n} is the number of bits in each operand.}
+\end{property}
+
+\noindent \textbf{Proof}
+For {\it n}-digit carry skip adder,{\it n} single digit blocks are needed. From Figure~\ref{fig:p1_c2_fig9}, it can be shown that for single-bit carry skip adder, four full adders and one carry skip block are needed. The area of {1}-digit carry skip adder is
+\begin{align*}
+A = 4A{}_{FA} + A{}_{CSB}
+\end{align*}
+\textnormal{The areas of {\it A${}_{FA}$} block and {\it A${}_{CSB\ }$}block are 9{\it 0 $\mu m{}^{2}$}and 9{ 5 $\mu m{}^{2}$} respectively. So, the total area of single-bit carry skip adder can be modeled as below:}
+
+\begin{align*}
+A = 4 \cdot 90 + 95 \mu m{}^{2\ }=455 \mu m{}^{2}
+\end{align*}\textnormal{
+So, the area for single-digit carry skip adder is { 455 $\mu m{}^{2}$. }Thus, the area of {\it n}-digit carry skip adder is {\it A = 455 $\cdot n$ $\mu m{}^{2}$}}.
+
+
+
+\begin{property}\textnormal{
+A reversible {\it n}-bit comparator requires {10.6 $\cdot n$ mW }power, where {\it n} is the number of bits in each operand.}
+\end{property}
+
+For {\it n}-digit carry skip adder,{\it n} single digit blocks are needed. From Figure~\ref{fig:p1_c2_fig9}, it can be shown that for a single bit carry skip adder, four full adders and one carry skip block are needed. So the total required power of an {\it n}-digit carry skip adder can be measured using following equation:
+
+\begin{align*}
+\textnormal{Total power} {\it P = n \cdot (4 \cdot P{}_{FA}+ P{}_{CSB\ })}
+\end{align*}
+\textnormal{
+The powers obtained by full adder block and carry skip block are { 3.4 mW} and {7.2 mW}, respectively. So, the power of a single-bit carry skip adder can be calculated as below:}
+
+\begin{align*}
+P{}_{single-digit} = 3.4 +7.2 = 10.6 mW
+\end{align*}
+\textnormal{
+Thus, the total required power of {\it n}-digit carry skip adder can be modeled as below:}
+\begin{align*}
+P = 10.6 \cdot n mW
+\end{align*}
+
+\begin{property}\textnormal{
+A reversible {\it n}-bit carry skip adder with {\it m}-bit in each block requires $\lceil{n/m}\rceil{\cdot}$ [${{1}\over {2^m}}${\it $\cdot$ }[{\it T${}_{P}$ + T${}_{m-\ AND}$}]{\it + }$(1-\ {{1}\over {2^m}})${\it $\cdot$ }[{\it m $\cdot$ T${}_{FA}$ + T${}_{m-\ AND}$}]] timing delay, where {\it T${}_{p}$} be the delay of single propagate output, {\it T${}_{FA}$} be the delay of full adder and {\it T${}_{m-AND}$} be the delay of {\it m} AND operations.}
+\end{property}
+
+\noindent\textbf{Proof}\textnormal{
+Suppose, {\it T${}_{m-bit\ Block}$} be the delay of a single block of {\it m}-bit carry skip adder. Then, from the design, total timing delay can be modeled by}
+
+\begin{align*}
+T_{d} = k \cdot T_{m-B}, \textnormal{where} \, k=\lceil{n/m}\rceil
+\end{align*}
+\textnormal{
+The delay of a single block depends on carry skip logic. If carry is skipped, the output {\it C${}_{out}$} of Figure~\ref{fig:p1_c2_fig9} is one, where the delay is calculated by the summation of the delay of single propagate output, denoted by {\it T${}_{P}$} and the delay of {\it m}-bit AND operations, denoted by {\it T${}_{m-AND}$}. Otherwise delay is equal to delay of m-bit ripple carry adder which is equal to {\it m $\cdot$ T${}_{FA}$}.}
+
+\begin{align*}
+{ T{}_{m-B} = p(skip) \cdot }[{ T{}_{P} + T{}_{m-\ AND}}]{ + p(not-skip)\cdot }[{ m \cdot T{}_{FA} + T{}_{m-\ AND}}]
+\end{align*}
+\textnormal{
+Here {\it P(skip)} be the probability of skipping~\index{skipping} carry and {\it P(not-skip)} be probability of not skipping carry.
+For, {\it m}-bit block {\it P(skip)} is calculated by
+$${P\left(skip\right)}={{2^m}\over {4^m}}=\ {{1}\over {2^m}}$$
+And {\it P(not-skip)} is calculated by
+$${P\left(not-skip\right)}={1-P\left(skip\right)}=1-\ {{1}\over {2^m}}$$
+{\it }
+So,{\it T${}_{m-B}$} = ${{1}\over {2^m}}${\it $\cdot$ }[{\it T${}_{P}$ + T${}_{m-\ AND}$}]{\it + }$(1-\ {{1}\over {2^m}})${\it $\cdot$ }[{\it m $\cdot$ T${}_{FA}$ + T${}_{m-\ AND}$}]
+Therefore, the total timing delay can be obtained by
+\begin{align*}
+T{}_{d} &= k \cdot {{1}\over {2^m}}{ \cdot }[{ T{}_{P} + T{}_{m-\ AND}}]{ + }(1-\ {{1}\over {2^m}}){ \cdot }[{ m \cdot T{}_{FA} + T{}_{m-\ AND}}]\\
+&=\lceil{n/m}\rceil \cdot [{{1}\over {2^m}}\cdot[{ T{}_{P} + T{}_{m-\ AND}}]{ + }(1-\ {{1}\over {2^m}}){ \cdot }[{ m \cdot T{}_{FA} + T{}_{m-\ AND}}]]
+\end{align*}}
+\textnormal{
+Therefore, a reversible {\it n}-bit carry skip adder with {\it m}-bit block requires $\lceil{n/m}\rceil\cdot$ [${{1}\over {2^m}}${\it $\cdot$ }[{\it T${}_{P}$ + T${}_{m-\ AND}$}]{\it + }$(1-\ {{1}\over {2^m}})${\it $\cdot$ }[{\it m $\cdot$ T${}_{FA}$ + T${}_{m-\ AND}$}]] timing delay.}
+
+
+
+\begin{property}\textnormal{
+A reversible {\it n}-bit carry skip adder with m-bit in each block requires {\it (6 $\cdot n + 4 \cdot m \cdot k)$} quantum cost.}
+\end{property}
+
+\noindent\textbf{Proof}\textnormal{
+For every bit of carry skip adder, it requires a single FAG gate. So the quantum cost for {\it n}-bit carry skip adder is {\it 6 $\cdot$ n}. For {\it m}-bit chunk, {\it m} AND operation and a single OR operation requires {\it m }Peres gate and total blocks is {\it k}. So, the required cost is {\it 4 $\cdot$ m $\cdot$ k}.}
+
+\textnormal{
+Therefore, the total quantum cost for a reversible {\it n}-bit carry skip adder with {\it m}-bit chunk requires {\it 6 $\cdot$ n + 4 $\cdot$ m $\cdot$ k} quantum cost.}
+
+
+\subsection{Carry Look-Ahead Adder}
+Carry Look-Ahead Adders (CLA) are the fastest of all adders and achieve speed through parallel~\index{parallel} carry computations. For each bit in a binary sequence to be added, the CLA logic determines whether that bit pair will generate a carry or propagate a carry. This allows the circuit to ``pre-process'' the two numbers being added to determine the carry ahead of time. Then, when the actual addition is performed, there is no delay from waiting for the ripple carry effect. Figure~\ref{fig:p1_c2_fig12} shows the design of a carry look-ahead adder circuit using algorithm~\ref{alg:part1_c2_alg4}.
+
+The adder is based on the fact that a carry signal will be generated in two cases:
+\begin{enumerate}
+\item When both bits {\it A${}_{i}$} and {\it B${}_{i}$} are 1, or
+\item When one of the two bits is 1 and carry-in is also 1.
+\end{enumerate}
+
+\noindent Thus, it can be written as
+$C{}_{OUT} = C{}_{i + 1} = A{}_{i} . B{}_{i} + (A{}_{i}{\oplus } B{}_{i}) . C{}_{i}$.
+\newline The above expression can also be represented as:
+
+$C{}_{i+1} = G{}_{i} + P{}_{i} . C{}_{i}$.
+
+\noindent where $G{}_{i} = A{}_{i} . B{}_{i}$ and $P{}_{i} = A_{i} \oplus B_{i} ,0 \le i < n$
+
+$
+C_i=\left\{\begin{matrix}
+C_i;& i=0\\
+G_{i-1}\sum_{j=0}^{i=2}\left ( \prod_{k=j+1}^{i=1}p_k \right )G_j+\left ( \prod_{k=j+1}^{i=1}p_k \right )c_{in};&1\le i\le n-1 \\
+C_{Out};& i=n
+\end{matrix}\right.
+$
+
+\noindent Applying this to a {4}-bit adder, we get
+
+
+
+\begin{align*}
+C{}_{1} &= G{}_{0} + P{}_{0\ }. C{}_{0}\\
+%
+C{}_{2} &= G{}_{1} + P{}_{1} C{}_{1}\\
+%
+&= G{}_{1} + P{}_{1} G{}_{0} + P{}_{1} P{}_{0} C{}_{0}\\
+%
+C{}_{3} &= G{}_{2} + P{}_{2} C{}_{2}\\
+%
+&= G{}_{2} + P{}_{2} G{}_{1} + P{}_{2} P{}_{1} G{}_{0} + P{}_{2} P{}_{1} P{}_{0} C{}_{0}\\
+%
+C{}_{4} &= G{}_{3} + P{}_{3} C{}_{3} = G{}_{3} + P{}_{3} G{}_{2} + P{}_{3} P{}_{2} G{}_{1} + P{}_{3} P{}_{2} P{}_{1} G{}_{0} + P{}_{3} P{}_{2} P{}_{1} P{}_{0} C{}_{0}
+\end{align*}
+
+\noindent The Sum of the signals can be calculated as follows
+
+\begin{align*}
+{ S{}_{i} = A{}_{i}}{\oplus }{ B{}_{i}}{\oplus }{ C{}_{i} = P{}_{i}}{\oplus }{ C{}_{i}}
+\end{align*}
+
+The CLA can be broken up into two modules:
+\begin{enumerate}
+\item Partial Full Adder (PFA): This generates G${}_{i}$, P${}_{i}$, C${}_{i}$ and S${}_{i}$. Figure~\ref{fig:p1_c2_fig8} shows PFA design using a Tofolli gate and a FAG gate. The quantum cost of this circuit is 5+6=11.
+\item Carry Look-Ahead Logic (CLA): The CLA generates the carry-out bits. Figure~\ref{fig:p1_c2_fig11} shows carry look-ahead logic.
+\end{enumerate}
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.8\textwidth]{chapters/part1/chapter2/fig11.eps}
+\caption{Reversible Partial Full Adder}
+\label{fig:p1_c2_fig11}
+\end{figure}
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.8\textwidth]{chapters/part1/chapter2/fig12.eps}
+\caption{{\it n}-bit Carry Look-Ahead Adder Circuit}
+\label{fig:p1_c2_fig12}
+\end{figure}
+\counterwithin{algorithm}{subsection}
+\begin{algorithm}[!tbh]
+\caption{Design of {\it n}-bit Carry Look-Ahead Adder Circuit}
+\label{alg:part1_c2_alg4}
+Input: { { \textit{A, B}; (both are \textit{n}-bit binary number)}}\\
+Output: {{\textit{Sum(n}-bit), \textit{Carry}(1-bit)}}
+\begin{algorithmic}[1]
+
+\STATE Begin
+\FOR{ \textit{i}=0 \TO \textit{n}-1 }
+\STATE Take one FAG gate, $F{}_{i}$
+\STATE Set $F{}_{i}.a=A{}_{i}$; $F{}_{i}.b=B{}_{i}$; $F{}_{i}.c=0; F{}_{i}.d=0$;
+\STATE Output, {\bf {\it Sum${}_{i}$}}=$F{}_{i}.r$;
+\ENDFOR
+\STATE {\bf set, {\it Carry} = GenerateCarry($C{}_{0}$, $P{}_{0}$, $G{}_{0}$, $P{}_{1}$, $G{}_{1}$, {\dots}, $P{}_{n\cdot1}$, $G{}_{n\cdot1}$)} [Algorithm~\ref{alg:part1_c2_alg5}]
+\STATE End
+\end{algorithmic}
+\end{algorithm}
+
+
+
+\begin{algorithm}[!tbh]
+\caption{Carry Generation}
+\label{alg:part1_c2_alg5}
+Input: {\bf {\it C${}_{0,\ }$P(P${}_{0}$, P${}_{1}$, {\dots}, P${}_{n-1}$), G(G${}_{0}$, G${}_{1}$, {\dots}, G${}_{n-1}$);}}\\
+Output: {{ \textit{Carry}(1-bit)}}
+\begin{algorithmic}[1]
+\STATE Begin
+\FOR{ \textit{i}=1 \TO \textit{n} }
+\STATE $C{}_{i}$ = $G{}_{i-1}${\bf OR} $P{}_{i\cdot 1}${\bf AND} $C{}_{i\cdot 1}$
+\ENDFOR
+\STATE {\bf set, {\it Carry} = $C{}_{n}$}
+\STATE End
+\end{algorithmic}
+\end{algorithm}
+\counterwithin{property}{subsection}
+\begin{property}\textnormal{
+A reversible {\it n}-bit carry look-ahead adder requires {$T{}_{s} + n \cdot T{}_{PG}+ n \cdot T{}_{c}$} timing delay, where T${}_{s}$ be startup delay and {\it T${}_{PG}$} be the delay for generating {\it P${}_{i}$} and {\it G${}_{i}$}.}
+\end{property}
+
+\noindent\textbf{Proof}{
+The total timing delay is
+{$T{}_{d} = T{}_{s}+n\cdot T{}_{PG\ }+T{}_{carry}$}, where {$T{}_{carry}$} =Time for generating {\it carry}.}
+
+\textnormal{
+Again, {$T{}_{carry} = n \cdot T{}_{c}$}. Here, {$T{}_{c}$} is time to calculate a carry of {$i{}^{th}$} bit which needs the constant time, that is {\it O(1)}.}
+
+\textnormal{
+Thus the total delay, {$T{}_{d} = T{}_{s} + n \cdot T{}_{PG\ }+ n \cdot T{}_{c}$}. So, a reversible {\it n}-bit carry look-ahead adder requires {$T{}_{s} + n \cdot T{}_{PG} + n \cdot T{}_{c}$} timing delay.}
+
+
+\section{Reversible BCD Adders}
+In this section, the designs for reversible BCD and Carry Skip reversible BCD adders have been presented. For both designs, the detail algorithms with figures and examples~\index{examples} are shown.
+\counterwithin{property}{section}
+\begin{property}\textnormal{
+If each digit of a decimal number is represented by its equivalent straight binary code, it is known as Binary Coded Decimal (abbreviated as BCD).}
+\end{property}
+\counterwithin{example}{section}
+\begin{example}\textnormal{
+BCD representation for decimal 801 is 1000 0000 0001.}
+
+\textnormal{There are 10 valid digits~\index{digits} ranging from 0 to 9. The straight binary representation for 0 and 9 is 0000 and 1001 respectively. Four bits are required to represent decimal 9 and with 4 bits, it can generate up to 16 different~\index{different} states, ranging from 0 to 15. Therefore, there are 6 forbidden states and only 10 numbers (0000 to 1001, i.e., decimal 0 to 9) are valid in BCD system.}
+\end{example}
+
+\begin{property}\textnormal{
+A BCD adder is an adder which performs addition of two BCD numbers.}
+\end{property}
+
+\begin{example}\textnormal{
+After adding two BCD numbers 0100 and 0101, BCD adder will produce their sum as 1001. It is the addition of 4 and 5 and produces the result 9 which is correct. But if we add 1000 and 0100, a simple binary addition will produce the output 1100, which as an invalid BCD number. The correct result of this BCD addition is 0001 0010. However, a combinational logic must be used to produce this correct result which will eventually detect that the resulting number overflows. If the number is greater than the highest~\index{highest} BCD number, 1001, and it notifies the appropriate correction logic that should be incorporated.}
+\end{example}
+
+\begin{property}\textnormal{
+A combinational circuit for BCD overflow detection is a circuit that checks~\index{checks} whether the result of the binary addition of the two BCD numbers overflows or not, i.e., the result of the addition is greater than 1001 (Decimal 9).}
+\end{property}
+
+A BCD number overflow occurs if the resulting number is greater than 1001. Let {\it A}${}_{3}${\it A}${}_{2}${\it A}${}_{1}${\it A}${}_{0}$ and {\it B}${}_{3}${\it B}${}_{2}${\it B}${}_{1}${\it B}${}_{0}$ be two BCD numbers to be added and the resulting number is represented by {\it T}${}_{3}${\it T}${}_{2}${\it T}${}_{1}${\it T}${}_{0}$. The carry out is represented by {\it C}${}_{4}$. {\it C}${}_{4}$ is set when the resulting number is greater than binary 1111, i.e. decimal 15. Six invalid BCD numbers can be detected by the condition ({\it T}${}_{2}$+{\it T}${}_{1}$){\it T}${}_{3}$. So, the expression for overflow detection bit, {\it F }is ({\it T}${}_{2}$+{\it T}${}_{1}$){\it T}${}_{3}$+{\it C}${}_{4}$. However, it is easy to note that ({\it T}${}_{2}$+{\it T}${}_{1}$){\it T}${}_{3}$ and {\it C}${}_{4}$ cannot be set at the same time. Therefore, a revised expression for overflow detection bit is {\it F }= ({\it T}${}_{2}$+{\it T}${}_{1}$){\it T}${}_{3}\oplus${\it C}${}_{4}$.
+
+If {\it F} is a set,then an overflow occurs and binary 0110 (decimal 6) is added to the partial sum $T{}_{3}T{}_{2}T{}_{1}T{}_{0}$ to generate the final result.
+
+\subsection{Design Procedure of the Reversible BCD Adder}
+
+A reversible BCD adder consists of three components: a 4-bit parallel adder, BCD adder overflow detection logic and BCD adder overflow correction logic. The design approach~\index{approach} is presented here along with proper algorithms and appropriate figures. In order to design the 1-digit BCD adder, three algorithms have been introduced. Algorithm~\ref{alg:part1_c2_alg6} termed as Overflow Detection Algorithm (ODA), is used to detect the overflow produced by adding two BCD digits. The Overflow Correction Algorithm (OCA), or Algorithm~\ref{alg:part1_c2_alg7} is used to correct the error generated by adding two BCD digits and finally, Algorithm~\ref{alg:part1_c2_alg8} is termed as BCD Adder Construction Algorithm which is used to design the overall circuit.
+
+
+\begin{algorithm}[!tbh]
+\caption{Overflow Detection Algorithm ({\it T})}
+\label{alg:part1_c2_alg6}
+Input: {\it T }({\it C}${}_{4}$, {\it T}${}_{3}$, {\it T}${}_{2}$, {\it T}${}_{1}$): a 4-bit vector received from the binary adder.\\
+Output: The vector{\it R}=({\it T} ${\cup }$ {\it F}) would be the output from this algorithm, where{\it F} is the overflow detection bit (1 indicates overflow, 0 otherwise). The reversible logic design states that there must be no fan-out from any segment of the circuit. It should be noted that, the {\it T }vector is required again for correction after overflow detection, but {\it T }was fed to this detection circuit. There are numerous ways of generating copies of {\it T }vector at any level, but this detection circuit is preferred to produce {\it T }vector as well.
+\begin{algorithmic}[1]
+\STATE Begin
+\STATE Overflow detection bit, {\it F }= ({\it T}${}_{2}$+{\it T}${}_{1}$){\it T}${}_{3}\oplus$ {\it C}${}_{4}$. The expression shows that the resulting circuit may contain at least two blocks. The approach is similar to the following:
+\STATE The first block takes {\it T}${}_{1}$ and {\it T}${}_{2}$ and produces output({\it T}${}_{2}$+{\it T}${}_{1}$).
+\STATE The second block takes the {\it T}${}_{3}$, {\it C}${}_{4}$ and output ({\it T}${}_{2}$+{\it T}${}_{1}$) from the first block and computes the result {\it F } = ({\it T}${}_{2}$+{\it T}${}_{1}$){\it T}${}_{3}\oplus$ {\it C}${}_{4}$.
+\STATE {\bf return} R: = T * F.
+\STATE End
+\end{algorithmic}
+\end{algorithm}
+\counterwithin{example}{subsection}
+\begin{example}\textnormal{
+Figure~\ref{fig:p1_c2_fig13} shows a direct implementation of Algorithm~\ref{alg:part1_c2_alg6} where {\it T }= ({\it C}${}_{4}$, {\it T}${}_{3}$, {\it T}${}_{2}$, {\it T}${}_{1}$).}
+
+\end{example}
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.8\textwidth]{chapters/part1/chapter2/fig13.eps}
+\caption{A 1-Digit BCD Adder's Overflow Detection Logic}
+\label{fig:p1_c2_fig13}
+\end{figure}
+
+\begin{algorithm}[!tbh]
+\caption{Overflow Correction Algorithm ({\it R})}
+\label{alg:part1_c2_alg7}
+Input: {\it R}=({\it T }${\cup }$ {\it F}): a 4-bit vector received from the overflow detection logic circuit.\\
+Output: Final corrected BCD sum {\it S}=({\it C}${}_{out}$, {\it S}${}_{3}$, {\it S}${}_{2}$, {\it S}${}_{1}$, {\it S}${}_{0}$). As{\it T}vector that was fed to the detection logic does not include {\it T}${}_{0}$, it is free and intact to use as {\it S}${}_{0}$. It is not mandatory to wait for the final carry out, because if {\it F }is 1, it is sure that the final carry out {\it C}${}_{out}$ =1, so it is not needed to propagate further to compute this carry.
+\begin{algorithmic}[1]
+\STATE Begin
+\STATE The first block will take {\it T}${}_{1}$ and {\it F }from the overflow detection logic circuit and generate {\it S}${}_{1}$ ={\it T}${}_{1}\oplus$ {\it F }and {\it car ry}\_{\it out}${}_{1}$ ={\it T}${}_{1}${\it F}.
+\STATE The second block will take carry out of the first block, {\it T}${}_{2}$ from the overflow detection circuit and {\it F }(this {\it F }can be duplicated using numerous techniques, in the circuit first block generates {\it F }again) and generate {\it S}${}_{2}$ ={\it T}${}_{2}\oplus$ {\it F }$\oplus$ {\it carry}\_{\it out}${}_{1}$. It will also generate {\it carry}\_{\it out}${}_{2}$ = ({\it T}${}_{2}\oplus$ {\it F}). {\it carry}\_{\it out}${}_{1}\oplus$ {\it T}${}_{2}${\it F}.
+\STATE The third block will take carry out of the second block, {\it T}${}_{3}$ from the overflow detection circuit and generate {\it S}${}_{3}$ ={\it T}${}_{3}\oplus$ {\it carry}\_{\it out}${}_{2}$.
+\STATE {\bf return} {\it S}
+\STATE End
+\end{algorithmic}
+\end{algorithm}
+
+
+\begin{example}\textnormal{ Figure~\ref{fig:p1_c2_fig14} shows a direct implementation of Algorithm~\ref{alg:part1_c2_alg7}.}
+\end{example}
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.8\textwidth]{chapters/part1/chapter2/fig14.eps}
+\caption{A 1-bit BCD Adder Correction Logic Circuit}
+\label{fig:p1_c2_fig14}
+\end{figure}
+
+
+
+\begin{algorithm}[!tbh]
+\caption{BCD Adder Construction Algorithm ({\it A}, {\it B})}
+\label{alg:part1_c2_alg8}
+Input: {\it A }= ({\it A}${}_{3}$, {\it A}${}_{2}${\it A}${}_{1}$, {\it A}${}_{0}$) and {\it B }= ({\it B}${}_{3}$, {\it B}${}_{2}$, {\it B}${}_{1}$, {\it B}${}_{0}$) are two {\it 4}-bit input BCD vectors.\\
+Output: Final corrected BCD sum {\it S }= ({\it C}${}_{out}$, {\it S}${}_{3}$, {\it S}${}_{2}$, {\it S}${}_{1}$, {\it S}${}_{0}$).\\
+\begin{algorithmic}[1]
+\STATE Begin
+\STATE {\it T}: Binary Adder Output({\it A}, {\it B});
+
+\STATE {\it R}: Overflow Detection Algorithm ({\it T});
+
+\STATE {\it S}: Overflow Correction Algorithm({\it R});
+\STATE {\bf return} {\it S}
+\STATE End
+\end{algorithmic}
+\end{algorithm}
+
+\begin{example}\textnormal{ Figure~\ref{fig:p1_c2_fig15} shows a direct implementation of Algorithm~\ref{alg:part1_c2_alg8}.}
+\end{example}
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=\textwidth]{chapters/part1/chapter2/fig15.eps}
+\caption{A 1-Digit BCD Adder}
+\label{fig:p1_c2_fig15}
+\end{figure}
+
+\subsubsection{Properties of the Reversible BCD Adder}
+
+In the design of reversible BCD adder, the primary concern is to keep the number of gates and number of garbage outputs~\index{outputs} as minimum as possible. As the number of gates is reduced, it is much likely that delay will also be reduced. Garbage output is another important criterion. Circuits with less number of garbage outputs are always desirable. Several properties for reversible BCD adder in terms of number of gates and garbage outputs are presented in this subsection.
+\counterwithin{property}{subsubsection}
+\begin{property}\label{p_c2_l_3}\textnormal{
+A combinational circuit for BCD overflow detection can be realized by at least two reversible gates.}
+\end{property}
+
+\noindent\textbf{Proof} One Toffoli gate is needed to generate the overflow expression,F=(T${}_{1}$+T${}_{2}$)T${}_{3}\oplus$ C${}_{4}$ using intermediate output. As a local~\index{local} application of Bennett's compute--uncompute trick, one Fredkin gate is used to generate intermediate output (T${}_{1}$+T${}_{2}$) from which second Fredkin gate restores the original input fed to the first one. But the second Fredkin gate is used to regenerate the primary input and \textit{F} alone can be generated without the help of second Fredkin gate, and hence, at least two reversible gates are needed to generate the overflow expression, $F = (T{}_{1}+T{}_{2})T{}_{3}\oplus C{}_{4}$.
+
+
+\begin{property}\label{p_c2_l_4}\textnormal{
+A combinational circuit for BCD overflow detection can be realized by zero garbage output.}
+\end{property}
+
+
+\noindent\textbf{Proof}
+Property~\ref{p_c2_l_4} shows that one FRG is used to generate intermediate output while other FRG stores the original input fed to the first one. A 3 ${\times}$3 TG also leaves 2 of its inputs unchanged. Constant 1 fed to the circuit is also outputted as constant 1, which is not considered as a garbage output. So, the combinational circuit for BCD overflow detection generates no garbage output.
+
+
+\begin{property}\label{p_c2_l_5}\textnormal{
+A reversible {\it 4}-bit parallel adder can be realized by at least eight garbage Outputs.}
+\end{property}
+
+\noindent\textbf{Proof}
+Figure~\ref{fig:p1_c2_fig15} shows that a reversible full adder circuit can be realized by at least 2 garbage outputs. A reversible {4}-bit parallel adder consists of 4 reversible full adders. So, a reversible {4}-bit parallel adder can be realized by 4 ${\times}$ 2 = 8 garbage outputs.
+
+
+\begin{property}\label{p_c2_l_6}\textnormal{
+Let g${}_{pa}$ be the minimum number of garbage outputs for a reversible 4-bit parallel adder, g${}_{od}$ be the minimum number of garbage output produced by the overflow detection circuit and g${}_{ocl}$ be the minimum number of garbage outputs for overflow correction logic. Let g${}_{BCD}$ be the number of garbage outputs for a reversible BCD adder. Then
+g${}_{BCD}$${>}$= g${}_{pa}$ + g${}_{od}$ + g${}_{ocl}$, where g${}_{pa}$${>}$= 8, g${}_{od}$${>}$= 0 g${}_{ocl}$${>}$= 2.}
+\end{property}
+
+
+\noindent\textbf{Proof}
+A reversible BCD adder consists of a 4-bit reversible parallel adder, overflow detection logic and overflow correction logic circuit. A {4}-bit parallel adder consists of 4 full adders and according to Property~\ref{p_c2_l_5}, a {4}-bit parallel adder will be realized by at least 8 garbage outputs. So, minimum number of garbage output for a reversible 4-bit parallel adder is {\it g}${}_{pa}$${>}$= 8.
+
+In the overflow detection logic circuit, the overflow expression, {\it F }= ({\it T}${}_{1}$+{\it T}${}_{2}$){\it T}${}_{3}\oplus$ {\it C}${}_{4}$ is realized and according to Property~\ref{p_c2_l_3}, BCD overflow detection logic can be realized by at least zero garbage outputs. So, the minimum number of garbage output for overflow detection logic is {\it g}${}_{od}$${>}$= 0. In the overflow correction logic, overflow {\it F }is propagated. According to the improved design presented in this chapter, overflow correction logic generates only two garbage outputs. So, the minimum number of garbage outputs for overflow correction logic is{\it g}${}_{ocl}$${>}$= 2.
+As a result, the total number of garbage outputs for a reversible BCD adder, $g{}_{BCD}$${>}= g{}_{pa} + g{}_{od} + g{}_{ocl}$, where $g{}_{pa}{>}= 8, g{}_{od}{>}= 0 g{}_{ocl}{>}= 2$.
+
+
+\begin{property}\label{p_c2_l_7}\textnormal{
+Let $gt_{pa}$ be the minimum number of gates for a reversible 4-bit parallel adder, $gt{}_{od}$ be the minimum number of gates required by overflow detection circuit and $gt{}_{ocl}$ be the minimum number of gates for overflow correction logic circuit. Let $gt{}_{BCD}$ be the total number of gates for a reversible BCD adder. Then
+$gt{}_{BCD}$${>}= gt{}_{pa}+gt{}_{od}+gt{}_{ocl}$, where $gt{}_{pa}{>}= 4;\, gt{}_{od}{>}= 3$ and $gt{}_{ocl}{>}= 2.$}
+\end{property}
+
+
+\noindent\textbf{Proof}
+A reversible BCD adder consists of a{4}-bit reversible parallel adder, overflow detection logic and overflow correction logic, where a {4}-bit parallel adder consists of 4 full adders and a {4}-bit parallel adder can be realized by at least 4 reversible gates. So, the minimum number of gates for a reversible {4}-bit parallel adder is $gt{}_{pa}$${>}= 4$.
+
+
+In the overflow detection logic, the overflow expression, $F=(T{}_{1}+T{}_{2})T{}_{3}\oplus C{}_{4}$ is realized and according to Property~\ref{p_c2_l_3}, BCD overflow detection logic can be realized by at least two reversible gates. So, the minimum number of gates for overflow detection logic is $gt{}_{od}{>}= 2$. In the overflow correction logic, BCD number is corrected. According to the design, the overflow correction logic can be realized with only three reversible gates. So, the minimum number of gates for overflow correction logic is $gt{}_{ocl}{>}= 2$.
+As a result, the total number of reversible gates for a reversible BCD adder is
+$gt{}_{BCD}{>}= gt{}_{pa}+gt{}_{od}+gt{}_{ocl}$, where $gt{}_{pa}{>}= 4;$ $gt{}_{od}{>}= 3$ and $gt{}_{ocl}{>}= 2$.
+
+\subsection{Design Procedure of the Reversible Carry Skip BCD Adder}
+
+A Carry Skip reversible BCD adder consists of the following components: a 4-bit parallel adder, Carry Skip logic, BCD adder overflow detection logic and BCD adder overflow correction logic. Carry Skip logic may generate the carry out ({\it C}${}_{out}$) instantaneously. These components are presented here with proper algorithms and appropriate figures.
+
+The carry Skip logic circuit is the fundamental part to this design. The carry in, $C{}_{in}$ can be propagated to the carry-out, {\it C}${}_{out}$ of the block. Let $A{}_{i}$ and {\it B${}_{i}$} be the inputs to {\it i${}^{th}$} full adder and either of them is set. Propagation $P{}_{i}={A{}_{i}}\oplus B{}_{i}$ and {\it C}${}_{in}$ to the block will propagate to the carry output of the block if the entire {\it P${}_{i}$}'s are set. In this way, {\it C}${}_{out}$ can be generated without waiting for it to be generated in ripple carry fashion. Let, the propagation signal for the block is denoted by {\it P}. If {\it P }is set, {\it C}${}_{in}$ will be propagated to the {\it C}${}_{out}$. However, in the other case, {\it C}${}_{out}$ will be generated in the ripple carry fashion. So, carry skip logic bit of the block is $K ={ PC}{}_{in}+t C{}_{4}$ where {\it C}${}_{4}$ is the carry generated in the ripple carry fashion. {\it K } can be slightly modified to realize the logic more clearly: {\it K}={\it PC}${}_{in}\oplus${\it ${P}C$}${}_{4}$ the expression reveals~\index{reveals} the fact that if {\it P }(Propagate) is true, it does not have to wait for the generation of find carry out {\it C}${}_{4}$, but if {\it P }is false, it is needed to go in formal way, i.e., wait for {\it C${}_{4}$} to generate. The overall overflow detection bit, $F= (T{}_{1}+T{}_{2})T{}_{3}\oplus$ {\it K }is generated in the same way with reversible BCD adder presented earlier in this chapter. Overflow correction logic incorporated is the same as the reversible BCD adder.
+Algorithm~\ref{alg:part1_c2_alg9} is used to design the 1-digit Cary Skip BCD adder as shown in Figure~\ref{fig:p1_c2_fig16}.
+
+\begin{algorithm}[!tbh]
+\caption{Carry Skip BCD Adder Algorithm ({\it A}, {\it B},{\it C${}_{i}$})}
+\label{alg:part1_c2_alg9}
+Input: {\it A }= ({\it A}${}_{3}$, {\it A}${}_{2}$, {\it A}${}_{1}$, {\it A}${}_{0}$) and {\it B }= ({\it B}${}_{3}$, {\it B}${}_{2}$, {\it B}${}_{1}$, {\it B}${}_{0}$) are two input vectors and {\it C}${}_{in}$ is the carry in.\\
+Output: A BCD adder capable of performing the sum ={\it A}+{\it B}. The buffer vector {\it S }= ({\it C}${}_{out}$, {\it S}${}_{3}$, {\it S}${}_{2}$, {\it S}${}_{1}$, {\it S}${}_{0}$) will store the result.
+\begin{algorithmic}[1]
+\STATE Begin
+\STATE Compute {\it P }(propagate bit).
+
+\STATE Initially {\it P}: = true
+\FOR{ i \TO $0, 1, \dots, 3$ }
+\STATE P: = P AND (A${}_{i}$ B${}_{i}$)
+\ENDFOR
+\STATE Compute {\it T}: = ${\{}${\it C}${}_{4}$, {\it T}${}_{3}$, {\it T}${}_{2}$, {\it T}${}_{1}$, {\it T}${}_{0}$${\}}$, where {\it T${}_{i}$}: ={\it A${}_{i}\oplus$} {\it B${}_{i}\oplus$} {\it C${}_{i}$}and {\it C${}_{i}$}'s are generated from each adder block.
+\STATE {\bf return} {\it S}.
+\STATE Compute carry skip logic bit,{\it K}:={\it P}.{\it C}${}_{in}\oplus \overline{P}$.{\it C}${}_{4}$
+\STATE Add binary 011 to {\it T }if overflow detection bit {\it F is} true.
+
+\STATE Compute {\it S}:=${\{}${\it C}${}_{out}$,{\it S}${}_{3}$,{\it S}${}_{2}$,{\it S}${}_{1}$,{\it S}${}_{0}$${\}}$,the final sum of the addition process.
+\STATE End
+\end{algorithmic}
+\end{algorithm}
+
+\begin{example}\textnormal{
+Figure~\ref{fig:p1_c2_fig16} shows a direct implementation of Algorithm~\ref{alg:part1_c2_alg9}.}
+\end{example}
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=\textwidth]{chapters/part1/chapter2/fig16.eps}
+\caption{A Carry Skip 1-Digit BCD Adder}
+\label{fig:p1_c2_fig16}
+\end{figure}
+
+The FRGs in the middle of the Figure~\ref{fig:p1_c2_fig16} generate the block propagation, {\it P }and carry skip logic bit, {\it K}. FRGs and TG on the left side perform~\index{perform} the BCD overflow detection same as for conventional BCD adder. BCD overflow correction logic is as like as the conventional one. In this figure, all {\it G}'s are garbage outputs.
+
+\subsubsection{Properties of the Reversible Carry Skip BCD Adder}
+
+In the design of Carry Skip reversible BCD adder, the primary concern is to keep the number of gates and number of garbage outputs as minimum as possible. Several properties for reversible Carry Skip BCD adder in terms of number of gates and garbage outputs are presented in this subsection.
+
+\begin{property}\textnormal{
+Any combinational circuit for carry Skip logic can be realized by at least 4 reversible gates.}
+\end{property}
+
+\noindent\textbf{Proof}
+Block propagation, {\it P }={\it P}${}_{3}${\it P}${}_{2}${\it P}${}_{1}${\it P}${}_{0}$ can be generated using FRGs. As one FRG is used for AND operation, three FRGs are needed to generate {\it P}. Another FRG is needed for intermediate output to generate the carry skip logic, {\it K}={\it PC}${}_{in}\oplus$ {\it $\overline{P}C$}${}_{4}$. Hence, at least 4(= 3+1) reversible gates are needed to generate the carry skip logic {\it K}={\it PC}${}_{in}\oplus${\it $\overline{P}C$}${}_{4}$.
+
+\begin{property}\textnormal{
+The combinational circuit for Carry Skip logic can be realized by 8 garbage outputs.}
+\end{property}
+
+\noindent\textbf{Proof}
+As one FRG is used for AND operation, three FRGS are needed to generate {\it P}. For each AND operation, only one of three outputs is used and other two remain as garbage outputs. So, 3 ${\times}$2 = 6 garbage outputs are generated to produce {\it P}. Another FRG is needed for intermediate output to generate the carry skip logic {\it K}={\it PC}${}_{in}\oplus${\it $\overline{P}C$}${}_{4}$ using intermediate output which generates 2 other garbage outputs. So, according to the design of BCD adder in this subsection, the combinational circuit generates 6+2 = 8 garbage outputs for carry skip logic.
+
+
+
+\begin{property}\textnormal{
+Let $g{}_{cpa}$ be the minimum number of garbage outputs for a reversible 4-bit parallel adder, $g{}_{cod}$ be the minimum number of garbage outputs produced by the overflow detection circuit and $g{}_{cocl}$ be the minimum number of garbage output for overflow correction logic. Let $g{}_{cBCD}$ be the number of garbage outputs for a Reversible Carry Skip BCD adder. Then
+$g{}_{cBCD}$${>}= g{}_{cpa} + g{}_{cod} + g{}_{cocl}$, where $g{}_{cpa}{>}= 4, g{}_{cod}{>}= 8$ and $g{}_{cocl}{>}= 2.$}
+\end{property}
+
+\noindent\textbf{Proof}
+A Carry Skip reversible BCD adder consists of a {4}-bit reversible parallel adder, overflow detection logic and overflow correction logic. A {4}-bit parallel adder consists of 4 full adders. According to Property~\ref{p_c2_l_5}, a {4}-bit parallel adder can be realized by at least 8 garbage outputs and from Algorithm~\ref{alg:part1_c2_alg9}, it is clear that 4 garbages from the 4 full adders are used to generate the propagate bit {\it P}. So, the number of garbage outputs for a reversible {4}-bit parallel adder, {\it g}${}_{cpa}$ reduces to 4.
+
+In the overflow detection logic, the overflow expression, {\it F}=({\it T}${}_{1}$+{\it T}${}_{2}$){\it T}${}_{3} \oplus$ $K$ is realized where{\it K} = {\it PC}${}_{in}\oplus$ {\it $\overline{P}C$}${}_{4}$. According to Property~\ref{p_c2_l_7} and Property~\ref{p_c2_l_4}, carry skip logic produces 8 and BCD overflow detection logic produces at least zero garbage output. So, the minimum number of garbage outputs for overflow detection logic is {\it g}${}_{cod}$${>}$ = 8+0 = 8. In the overflow correction logic, the overflow {\it F }is propagated. According to the design, garbage output for overflow correction logic is $g{}_{cocl}$${>}$= 2. As a result, the total number of garbage outputs for a carry skip BCD adder is
+
+$g{}_{cBCD}{>}= g{}_{cpa} + g{}_{cod} + g{}_{cocl}$, where $g{}_{cpa}{>}= 4, g{}_{cod}{>} = 8$ and $g{}_{cocl}{>}= 2$.
+
+\begin{property}\textnormal{
+Let $gt{}_{cpa}$ be the minimum number of gates for a reversible 4-bit parallel adder, $gt{}_{cod}$ be the minimum number of gates for the overflow detector and $gt{}_{cocl}$ be the minimum number of gates for overflow correction logic. Let $gt{}_{cBCD}$ be the number of gates for a reversible carry skip BCD adder. Then
+$gt{}_{cBCD}{>} = gt{}_{cpa} + gt{}_{cod} + gt{}_{cocl}$, where $gt{}_{cpa}{>}= 4, gt{}_{cod}{>}= 7$ and $gt{}_{cocl}{>}= 3.$}
+\end{property}
+
+\noindent\textbf{Proof}
+A reversible carry skip BCD adder consists of a {4}-bit reversible parallel adder, overflow detection logic and overflow correction logic. A {4}-bit parallel adder consists of 4 full adders and a {4}-bit parallel adder can be realized by at least 4 reversible gates. So, the minimum number of gates for a reversible {4}-bit parallel adder is $gt{}_{cpa}{>}= 4$.
+
+In the overflow detection logic, the overflow expression, {\it F}=({\it T}${}_{1}$+{\it T}${}_{2}$){\it T}${}_{3} \oplus$ {\it K} is realized where {\it K}={\it PC}${}_{in}\oplus$ {\it $\overline{P}C$}${}_{4}$. According to Property~\ref{p_c2_l_6} and Property~\ref{p_c2_l_3}, carry skip logic can be realized by at least 4 and BCD overflow detection logic produces at least 2 reversible gates. So, the minimum number of garbage outputs for overflow detection logic is $gt{}_{cod}{>} = 4+3=7$. In the overflow correction logic, the BCD number is corrected. According to the design, the overflow correction logic can be realized with only 3 reversible gates. So, the minimum number of gate for overflow correction logic is $gt{}_{ocl}{>} = 3$.
+
+As a result, the total number of reversible gates for a reversible BCD adder is $gt{}_{cBCD}{>} = gt{}_{cpa} + gt{}_{cod} + gt{}_{cocl}$, where $gt{}_{cpa}{>} = 4, gt{}_{cod}{>}= 7$ and $gt{}_{cocl}{>} = 3$.
+
+\section{Reversible BCD Subtractor}
+In this section, at first some mechanism and working procedures of BCD subtractor are shown. Then the BCD subtractor is designed as reversible fashion. %Subsection 2.3.1 and Subsection 2.3.2 describes the design procedures of carry look-ahead BCD subtractor and carry skip BCD subtractor, respectively. Then, Subsection 2.3.3, 2.3.4 and 2.3.5 describes the same procedures in reversible manner.
+
+In the BCD subtraction, the nine's complement of the subtrahend is added to the minuend. In the BCD arithmetic, the nine's complement is computed by nine minus the number whose nine's complement is to be computed. This can be illustrated as the nine's complement of 5 will be 4 (9 -- 5= 4), which can be represented in BCD code as 0100. In BCD subtraction using nine's complement, there can be two possibilities:
+
+The sum after the addition of minuend~\index{minuend} and the nine's complement of subtrahend is an invalid BCD Code (an example is when 5 is subtracted~\index{subtracted} from 8) or a carry is produced from the MSB (for example, 5 is subtracted from 8). In this case, add decimal 6 (binary 0110) and the end around carry (EAC) to the sum. The final result will be the positive~\index{positive} number represented by the sum.
+
+The sum of the minuend and the nine's complement of the subtrahend is a valid BCD code which means that the result is negative and is in the nine's complement form. An example is, when 8 is subtracted from 5.
+
+In BCD arithmetic, instead of subtracting the number from nine, the nine's complement of a number is determined by adding 1010 (Decimal 10) to the one's complement of the number. The nine's complement circuit using a 4-bit adder and XOR gates is shown in Figure~\ref{fig:p1_c2_fig17}. It has been realized that there is no need to use EX-OR gates in the nine's complement for complementing. The use of NOT gates will better suit the purpose and will reduce the complexity of the circuit, both in CMOS as well as reversible logic implementation. The modified design of nine's complement is shown in Figure~\ref{fig:p1_c2_fig18}. It replaces~\index{replaces} 4 EX-OR gates by 4 NOT gates. The 1-digit BCD subtractor using the nine's complement circuit is shown in Figure~\ref{fig:p1_c2_fig19}. In Figure~\ref{fig:p1_c2_fig19}, after getting the nine's complement of the subtrahend, it is added to the minuend using the BCD adder. Then the required 1010 is added by using the complement of the output carry of the BCD adder. The sign represents whether the number stored is positive or negative (for example, 5-8 will be stored as Sign=1 and Magnitude $(S_3 \cdots S_0) = 3)$.
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.5\textwidth]{chapters/part1/chapter2/fig17.eps}
+\caption{Nine's Complement Circuit}
+\label{fig:p1_c2_fig17}
+\end{figure}
+
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.5\textwidth]{chapters/part1/chapter2/fig18.eps}
+\caption{Modified Nine's Complement Circuit}
+\label{fig:p1_c2_fig18}
+\end{figure}
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.5\textwidth]{chapters/part1/chapter2/fig19.eps}
+\caption{Modified Conventional BCD Subtractor}
+\label{fig:p1_c2_fig19}
+\end{figure}
+
+\subsection{Carry Look-Ahead BCD Subtractor}
+
+The carry look-ahead BCD subtractor can be designed by integrating the BCD adder, 4-bit adder and nine's complement components. Figure~\ref{fig:p1_c2_fig20} shows the design of the carry look-ahead BCD subtractor. It is to be noted that the emphasis has been laid on improving the individual~\index{individual} modules of the BCD subtractor to improve its overall efficiency and make it more suitable for reversible logic implementation.
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.5\textwidth]{chapters/part1/chapter2/fig20.eps}
+\caption{CLA BCD Subtractor}
+\label{fig:p1_c2_fig20}
+\end{figure}
+
+\subsection{Carry Skip BCD Subtractor}
+
+Figure~\ref{fig:p1_c2_fig21} shows the design of the carry skip BCD subtractor. It is to be noted that the carry skip implementation of the nine's complement in the circuit will not be beneficial, making the carry look-ahead as the best choice for its implementation. The carry skipping property of the BCD adder can be beneficial only when its input carry $C_{in}=$1. Thus, in order to extract the benefit of the carry skip property of the BCD adder in the BCD subtractor, the LSB output $(n_0)$ of the nine's complement has been made as input carry $'C_{in}$ of the carry skip BCD adder and passed `0' in its place for addition to the BCD adder. Therefore, the numbers passed for addition in carry skip BCD adder will be $X+(n_3 n_2 n_1'0')+n_0$, where $n_0$ will work as $C_{in}$. The last block of the 4-bit adder in the circuit has also been designed in the carry skip fashion to further improve the efficiency of the design further. This will result in the generation of $C_{out}$ in Figure~\ref{fig:p1_c2_fig21} in carry skip fashion.
+
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.6\textwidth]{chapters/part1/chapter2/fig21.eps}
+\caption{Carry Skip BCD Subtractor}
+\label{fig:p1_c2_fig21}
+\end{figure}
+
+
+\subsection{Design of Conventional Reversible BCD Subtractor}
+It is evident~\index{evident} from Figure~\ref{fig:p1_c2_fig19} that in order to design reversible BCD subtractors, the whole reversible design must be divided into three sub-modules.
+\begin{enumerate}
+\item Design of the reversible nine's complement (which, in turn, has to be designed using reversible parallel adders).
+
+\item Design of the reversible BCD adder.
+
+\item Integration of the modules to design the reversible BCD subtractor.
+\end{enumerate}
+
+The primary goal of this section is to design reversible BCD subtractors with a minimal number of reversible gates and garbage output.
+
+\subsubsection{Reversible Nine's Complement}
+
+Figure~\ref{fig:p1_c2_fig22} shows the reversible nine's complement using the NOT gates, New gates (NG) and the 3 ${\cdot}$ 3 Feynman Gate (FG). The design is implemented with 7 reversible gates and 3 garbage outputs. To minimize~\index{minimize} the garbage at the bottom 4-bit adder, property of regenerating the constant value at the garbage output has been utilized (the constant input `1' at the NG gate is regenerated at one of its garbage outputs and is used as input to FG. It is observed that the $S_0$ can be directly generated without requiring any addition circuitry (referring to Figure~\ref{fig:p1_c2_fig17}, it is needed to mention that the second input to the full adder is `0' and the $C_{in}$ is `0'. Further examination showed that there is no need for the full adder in the 2${}^{nd}$ place, 3${}^{rd}$ place and 4${}^{th}$ place of the bottom 4-bit adder. Half adders and 3-input Ex-OR gate can perform the required addition operations. The reversible half adder can be designed by New gate (NG) with only one garbage output and the 3-input Ex-OR gate can be designed using FG with only two garbage outputs. Utilizing the reversible full adder in those places would have increased the garbage, as at least two garbage output are required in a reversible full adder. Moreover, the output carry is not required in the nine's complement. Thus, the reversible full adder would have generated the output carry leading to an increase in garbage count.
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.5\textwidth]{chapters/part1/chapter2/fig22.eps}
+\caption{Reversible Nine's Complement}
+\label{fig:p1_c2_fig22}
+\end{figure}
+
+\subsubsection{Reversible BCD Subtractor}
+The reversible BCD subtractor using the reversible nine's complement, reversible BCD adder, TSG, NG and Feynman gate (FG) is shown in Figure~\ref{fig:p1_c2_fig23}. It has been proved that the reversible designs of the nine's complement and BCD adder are designed with minimal number of reversible gates and garbage outputs. In order to design a more efficient complete BCD subtractor in terms of the number of reversible gates and garbage outputs, Feynman gate has been used for generating the Ex-OR/NOT function and copying the output (as fan-out is not allowed in reversible logic). Here Feynman gate is chosen as it can generate Ex-OR/NOT function and copy the output with minimum number of reversible gates and garbage output. This can be understood by the fact that there are exactly two outputs corresponding to the input of a Feynman gate, a `0' in the second input will copy the first input in both the output of that gate. It makes the Feynman gate most suitable for a single copy of bit, as it does not produce any garbage output.
+
+
+The bottom {4}-bit binary adder required in BCD subtractor is also designed very efficiently to minimize the garbage output. This is achieved~\index{achieved} by carefully passing the input signal and thereby utilizing the garbage output for further computation along with identifying suitable places where reversible full adders can be replaced by reversible half adders. An inefficient approach of simply designing the \textit{4}-bit adder with the reversible full adder could lead to 8 garbage outputs (at least two garbage outputs are produced in a reversible full adder). The BCD adder requires 10 reversible gates and 13 garbage outputs as it is proved above. The nine's complement is designed with 7 reversible gates and 3 garbage outputs. The generation of Ex-OR functions, copying and NOT functions are designed in such an optimal manner that it requires 5 Feynman gates with zero garbage output. The bottom {4}-bit reversible adder is designed with 4 reversible gates and 4 garbage outputs. Thus, the reversible BCD subtractor is designed with 10+7+5+4=26 reversible gates with the minimum number of garbage outputs 13+3+4=20.
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.6\textwidth]{chapters/part1/chapter2/fig23.eps}
+\caption{Reversible BCD Subtractor}
+\label{fig:p1_c2_fig23}
+\end{figure}
+
+\subsubsection{Reversible Design of Carry Look Ahead BCD Subtractor}
+
+After designing the individual reversible components of the carry look-ahead BCD subtractor, the components are combined together to design the complete reversible carry look-ahead BCD subtractor, as shown in Figure~\ref{fig:p1_c2_fig24}. It is to be noted that the same strategy of connecting the Feynman gates is used as chains for generating the Ex-OR, copying and NOT functions with zero garbage. Thus, the architecture is designed efficiently in terms of the numbers of reversible gates and garbage outputs.
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.6\textwidth]{chapters/part1/chapter2/fig24.eps}
+\caption{Reversible Carry Look-Ahead BCD Subtractor}
+\label{fig:p1_c2_fig24}
+\end{figure}
+
+\subsubsection{Reversible Design of Carry Skip BCD Subtractor}
+
+\noindent Figure~\ref{fig:p1_c2_fig25} shows the reversible implementation of the carry skip BCD subtractor. It is to be noted that the work is the attempt~\index{attempt} to design a reversible carry skip BCD subtractor. In the reversible implementation, the reversible nine's complement can be chosen from the nine's complement that is designed in the above subsections. The other component i.e., as shown in Figure~\ref{fig:p1_c2_fig25} is the reversible implementation of the 4-bit carry skip adder block (t the bottom of he figure) which is designed with 6 reversible gates and 7 garbage outputs. Thus, the reversible carry skip BCD subtractor is an efficient design in terms of the number of reversible gates and garbage outputs. It leads to conclude that utilizing the garbage output for regenerating the constant input like `1' and `0' will significantly help in reducing the garbage output. This can be considered as the indirect contribution of this chapter to the reversible logic community.
+
+
+\begin{figure}[!tbh]
+\centering
+\includegraphics[width=0.8\textwidth]{chapters/part1/chapter2/fig25.eps}
+\caption{Reversible Logic Implementation~\index{Implementation} of the Carry Skip BCD Adder}
+\label{fig:p1_c2_fig25}
+\end{figure}
+\section{Summary}
+
+Adder is the basic arithmetic unit of a computer system and it can be used in diverse areas such as complex quantum arithmetic circuits. In this chapter, a multi-operand {\it n-}digit reversible decimal adder is presented. An optimized and low quantum cost gate has been introduced. The full adder, carry skip adder, carry look-ahead adder and an optimized 3-operand {\it n}-digit decimal adder are designed using reversible logic gates. In addition, this chapter presents reversible logic implementations for Binary Coded Decimal (BCD) adder as well as carry skip BCD adder. Furthermore, a design of conventional BCD subtractors, carry look-ahead and carry skip BCD subtractors are shown. The designs of carry look-ahead and carry skip BCD subtractors are based on the designs of carry look-ahead and carry skip BCD adders respectively. Thus, the designs of various adders which have been shown in this chapter would help the reader to understand the next chapters~\index{chapters} clearly. In addition, the concept of designing these adder-subtractors will help in designing the reversible multiplier circuits.
